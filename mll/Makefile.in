@@ -4,11 +4,13 @@
 # for licensing information.
 #
 
-libexecdir = @libexecdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
 top_srcdir = @top_srcdir@
 SHELL = @SHELL@
 
-LIBEXECDIR = $(DESTDIR)$(libexecdir)
+BINDIR = $(DESTDIR)$(bindir)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 
 CC = gcc
@@ -18,8 +20,8 @@ OBJS = bitset.o read_instances.o shuffle_instances.o
 OBJS_NBAYES = learn_nbayes.o classify_nbayes.o \
   read_nbayes.o write_nbayes.o kfree_nbayes.o
 
-psam: libmll.a main.o
-	$(CC) $(CFLAGS) -o psam main.o libmll.a -lm
+ml: libmll.a main.o
+	$(CC) $(CFLAGS) -o ml main.o libmll.a -lm
 
 libmll.a: $(OBJS_NBAYES) $(OBJS)
 	ar cr libmll.a $(OBJS_NBAYES) $(OBJS)
@@ -36,12 +38,12 @@ classify_nbayes.o: classify_nbayes.c
 	$(CC) $(CFLAGS) -DUSE_LOGS -c classify_nbayes.c
 
 clean:
-	-rm -f libmll.a $(OBJS_NBAYES) $(OBJS) main.o psam
+	-rm -f libmll.a $(OBJS_NBAYES) $(OBJS) main.o ml
 
 distclean: clean
 	-rm -rf autom4te.cache 
 	-rm -f configure config.h config.log config.status configure.scan
 
-install: psam
-	$(mkinstalldirs) $(LIBEXECDIR)
-	cp psam $(LIBEXECDIR)
+install: ml
+	$(mkinstalldirs) $(BINDIR)
+	cp ml $(BINDIR)
