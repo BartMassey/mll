@@ -60,7 +60,7 @@ int classify_dtree(struct knowledge *k,
     }
 
     if (p->conf)
-        printf("conf: %f\n", conf);
+        printf("conf(%s): %f\n", ip->name, conf);
 
     return class;
 }
