@@ -15,20 +15,20 @@ void free_dtree(dtree *d) {
 void kfree_dtree(struct knowledge *k) {
     int i;
 
-    free_dtree(d->tree);
+    free_dtree(k->tree);
 
-    bs_free(pos_instances);
-    bs_free(neg_instances);
-    bs_free(instance_mask);
-    bs_free(condition_mask);
+    bs_free(k->pos_instances);
+    bs_free(k->neg_instances);
+    bs_free(k->instance_mask);
+    bs_free(k->condition_mask);
 
     for (i=0; i < k->ninstances; i++) {
-      bs_free(pos_conditions[i]);
-      bs_free(neg_conditions[i]);
+      bs_free(k->pos_conditions[i]);
+      bs_free(k->neg_conditions[i]);
     }
 
-    free(pos_conditions);
-    free(neg_conditions);
+    free(k->pos_conditions);
+    free(k->neg_conditions);
 
     free(k);
 }
