@@ -6,7 +6,11 @@
 typedef int count[2];
 
 struct knowledge {
-    int nsign[2];
-    int nconditions;
+    int nsign[2],
+        nconditions;
     count *counts;
+};
+
+struct params {
+    int conf;
 };
