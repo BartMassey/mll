@@ -1,0 +1,28 @@
+OBJS = learn_netclass.o classify_netclass.o \
+  read_netclass.o write_netclass.o kfree_netclass.o parseargs_netclass.o
+
+all: $(OBJS)
+
+$(OBJS): netclass.h
+
+classify_netclass.o: classify_netclass.c
+	$(CC) $(CFLAGS) -c classify_netclass.c
+
+learn_netclass.o: learn_netclass.c
+	$(CC) $(CFLAGS) -c learn_netclass.c
+
+kfree_netclass.o: kfree_netclass.c
+	$(CC) $(CFLAGS) -c kfree_netclass.c
+
+parseargs_netclass.o: parseargs_netclass.c
+	$(CC) $(CFLAGS) -c parseargs_netclass.c
+
+read_netclass.o: read_netclass.c
+	$(CC) $(CFLAGS) -c read_netclass.c
+
+write_netclass.o: write_netclass.c
+	$(CC) $(CFLAGS) -c write_netclass.c
+
+
+clean:
+	rm -f $(OBJS)
