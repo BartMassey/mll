@@ -4,6 +4,19 @@
 
 struct knowledge {
     dtree *tree;
+
+    /* bitset denoting positive and negative instances */
+    bitset pos_instances,
+	   neg_instances;
+
+    bitset instance_mask,
+	   condition_mask;
+
+    bitset *pos_conditions,
+	   *neg_conditions;
+
+    // track instance count for sizeof [pos/neg_conditions]
+    int ninstances;
 };
 
 struct params {
