@@ -21,7 +21,8 @@ struct params {
 	alltrials,
 	average,
 	use_diff,
-	use_sigmoid;
+	use_sigmoid,
+        conf;
 };
 
 /* these functions should be inlined for "speed" */
