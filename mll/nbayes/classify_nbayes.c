@@ -8,7 +8,7 @@
 int classify_nbayes(struct knowledge *k,
 		    struct instance *ip,
 		    struct params *p) {
-    int j, s, c, n, class;
+    int j, s, c, n, sign;
     double score[2];
     float m = 1.0, conf;
 
@@ -60,13 +60,14 @@ int classify_nbayes(struct knowledge *k,
 	score[s] *= k->nsign[s];
 #endif
 
-    if (score[0] > score[1])
-	class = -1;
     if (score[1] > score[0])
-	class = 1;
-    class = 0;
+	sign = 1;
+    else if (score[0] < score[1])
+	sign = -1;
+    else
+        sign = 0;
 
-    if (p->conf) {
+    if (p->debug) {
 
 #ifdef USE_LOGS
         // exponentiate to get probability estimate
@@ -81,8 +82,8 @@ int classify_nbayes(struct knowledge *k,
         else
             conf = .5;
 
-        printf("conf(%s): %f\n", ip->name, conf);
+        DEBUG_CLASS(ip->name, ip->sign, sign, conf);
     }
 
-    return class;
+    return sign;
 }

@@ -9,7 +9,7 @@
 int classify_hamming(struct knowledge *k,
 		     struct instance *ip,
 		     struct params *p) {
-    int i;
+    int i, sign;
     int *ds = malloc(k->iip->ninstances * sizeof(*ds));
     int min_hdist = k->iip->nconditions + 1;
     int npos = 0, nneg = 0;
@@ -37,11 +37,21 @@ int classify_hamming(struct knowledge *k,
         }
     free(ds);
 
+    if (npos - nneg > 0)
+        sign = 1;
+    else if (npos - nneg < 0)
+        sign = -1;
+    else
+        sign = 0;
+
     // Print confidence value for this classifiction
-    if (p->conf) {
+    if (p->debug) {
 
         // normalize hamming distance by number of conditions
-        conf = (1 - (float)min_hdist / ip->nconditions);
+        // XXX: don't normalize since other learners' conf 
+        //      measure isn't normalized
+//        conf = (1 - (float)min_hdist / ip->nconditions);
+        conf = 1;
 
         // compute proportion of majority min distance samples
         if (npos > nneg)
@@ -49,11 +59,8 @@ int classify_hamming(struct knowledge *k,
         else
             conf *= (float)nneg / (npos + nneg);
 
-        printf("conf(%s): %f\n", ip->name, conf);
+        DEBUG_CLASS(ip->name, ip->sign, sign, conf);
     }
 
-    if (npos - nneg < 0)
-        return -1;
-
-    return 0;
+    return sign;
 }
