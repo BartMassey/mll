@@ -23,7 +23,7 @@ OBJS = bitset.o read_instances.o shuffle_instances.o
 # Export these variables to sub-makes
 export CC CFLAGS LIBS
 
-LEARNERS = nbayes
+LEARNERS = nbayes neuron
 OBJS_LEARNERS = $(patsubst %,%/*.o,$(LEARNERS))
 
 $(PROG): learners libmll.a main.o
@@ -48,10 +48,10 @@ install: $(PROG)
 
 # Make each learner in sub-directories
 learners:
-	$(foreach SUBDIR,$(LEARNERS),$(MAKE) -C $(SUBDIR))
+	$(foreach SUBDIR,$(LEARNERS),$(MAKE) -C $(SUBDIR);)
 
 clean:
-	$(foreach SUBDIR,$(LEARNERS),$(MAKE) -C $(SUBDIR) clean)
+	$(foreach SUBDIR,$(LEARNERS),$(MAKE) -C $(SUBDIR) clean;)
 	-rm -f libmll.a $(OBJS) main.o $(PROG)
 
 
