@@ -24,5 +24,6 @@ AC_FUNC_REALLOC
 
 AC_CONFIG_FILES([Makefile
 		 nbayes/Makefile
-		 neuron/Makefile])
+		 neuron/Makefile
+		 hamming/Makefile])
 AC_OUTPUT

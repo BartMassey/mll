@@ -24,7 +24,7 @@ OBJS = bitset.o read_instances.o shuffle_instances.o write_instances.o \
 # Export these variables to sub-makes
 export CC CFLAGS LIBS
 
-LEARNERS = nbayes neuron
+LEARNERS = nbayes neuron hamming
 OBJS_LEARNERS = $(patsubst %,%/*.o,$(LEARNERS))
 
 $(PROG): learners libmll.a main.o
