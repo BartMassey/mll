@@ -6,7 +6,7 @@
 /* XXX should be changed to use XML */
 
 struct knowledge *read_neuron(FILE *f) {
-    int i;
+    int i, t;
     struct knowledge *k = malloc(sizeof (*k));
     
     assert(k);
@@ -24,8 +24,8 @@ struct knowledge *read_neuron(FILE *f) {
 	return 0;
     }
 
-    for (i=0; i < nconditions; i++) {
-	if (fscanf(f, "%d %lg\n", &t, weights + i) != 2) {
+    for (i=0; i < k->nconditions; i++) {
+	if (fscanf(f, "%d %lg\n", &t, k->weights + i) != 2) {
 	    free(k);
 	    return 0;
 	}
