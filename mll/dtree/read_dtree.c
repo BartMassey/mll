@@ -19,7 +19,7 @@ struct dtree *read_tree(FILE *f) {
     case 'n':
         // read node
         d->tag = DT_NODE;
-        if (!(fscanf(f, "%d\n", &d->val.node.attr) == 1) ||
+        if (!(fscanf(f, " %d\n", &d->val.node.attr) == 1) ||
             !(d->val.node.neg = read_tree(f)) ||
             !(d->val.node.pos = read_tree(f))) {
             free(d);
@@ -36,7 +36,7 @@ struct dtree *read_tree(FILE *f) {
         // read negative leaf
         d->tag = DT_NEG;
         d->val.leaf.pos = 0;
-        if (fscanf(f, "%d\n", &d->val.leaf.neg) != 1) {
+        if (fscanf(f, " %d\n", &d->val.leaf.neg) != 1) {
             free(d);
             return 0;
         }
@@ -45,7 +45,7 @@ struct dtree *read_tree(FILE *f) {
     case 'P':
         d->tag = DT_POS;
         d->val.leaf.neg = 0;
-        if (fscanf(f, "%d\n", &d->val.leaf.pos) != 1) {
+        if (fscanf(f, " %d\n", &d->val.leaf.pos) != 1) {
             free(d);
             return 0;
         }
@@ -53,7 +53,7 @@ struct dtree *read_tree(FILE *f) {
 
     case 'M':
         d->tag = DT_MIXED;
-        if (fscanf(f, "%d,%d\n", &d->val.leaf.neg, &d->val.leaf.pos) != 2) {
+        if (fscanf(f, " %d,%d\n", &d->val.leaf.neg, &d->val.leaf.pos) != 2) {
             free(d);
             return 0;
         }
@@ -66,7 +66,7 @@ struct dtree *read_tree(FILE *f) {
     return d;
 }
 
-struct knowledge *read_dtree(FILE *f) {
+struct knowledge *read_dtree(FILE *f, struct params *p) {
     int l, i;
     char *s;
     struct knowledge *k = malloc(sizeof(*k));

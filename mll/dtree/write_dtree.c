@@ -21,7 +21,7 @@
  ****************************************************************/
 void write_tree(FILE *f, struct dtree *d) {
     if (d->tag == DT_NODE) {
-        fprintf(f, "n%d\n", d->val.node.attr);
+        fprintf(f, "n %d\n", d->val.node.attr);
 
         // write left subtree
         write_tree(f, d->val.node.neg);
@@ -33,13 +33,13 @@ void write_tree(FILE *f, struct dtree *d) {
         fprintf(f, "E\n");
 
     else if (d->tag == DT_NEG)
-        fprintf(f, "N%d\n", d->val.leaf.neg);
+        fprintf(f, "N %d\n", d->val.leaf.neg);
 
     else if (d->tag == DT_POS)
-        fprintf(f, "P%d\n", d->val.leaf.pos);
+        fprintf(f, "P %d\n", d->val.leaf.pos);
 
     else if (d->tag == DT_MIXED)
-        fprintf(f, "M%d,%d\n", d->val.leaf.neg, d->val.leaf.pos);
+        fprintf(f, "M %d,%d\n", d->val.leaf.neg, d->val.leaf.pos);
 
     // Invalid tree type, abort
     else
