@@ -175,6 +175,9 @@ int main(int argc, char **argv) {
 	    times(&t2);
 	    print_times("write", &t1, &t2);
 	}
+
+	learner->kfree(k);
+
 	break;
 	
 
@@ -244,6 +247,9 @@ int main(int argc, char **argv) {
 	    times(&t2);
 	    print_times("classify", &t1, &t2);
 	}
+
+	learner->kfree(k);
+
 	break;
     default:
 	usage();
