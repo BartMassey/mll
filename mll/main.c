@@ -141,6 +141,7 @@ int main(int argc, char **argv) {
 	
 
     case MODE_CHECK:
+    case MODE_CLASSIFY:
 	if (benchmark)
 	    times(&t1);
 	kf = fopen(kfn, "r");
@@ -161,28 +162,49 @@ int main(int argc, char **argv) {
 
 	if (benchmark)
 	    t1 = t2;
-	for (i = 0; i < iip->ninstances; i++) {
-	    int sign = classify_nbayes(k, iip->instances[i]);
-	    if (iip->instances[i]->sign > 0 && sign < 0) {
-		if (verbose || benchmark)
-		    printf("mistake: %s %d\n", iip->instances[i]->name, sign);
-		false_neg++;
+	switch (m) {
+	case MODE_CHECK:
+	    for (i = 0; i < iip->ninstances; i++) {
+		int sign = classify_nbayes(k, iip->instances[i]);
+		if (iip->instances[i]->sign > 0 && sign < 0) {
+		    if (verbose || benchmark)
+			printf("mistake: %s %d\n",
+			       iip->instances[i]->name, sign);
+		    false_neg++;
+		}
+		else if (iip->instances[i]->sign < 0 && sign > 0) {
+		    if (verbose || benchmark)
+			printf("mistake: %s %d\n",
+			       iip->instances[i]->name, sign);
+		    false_pos++;
+		} else if (sign == 0) {
+		    ambig++;
+		    if (verbose || benchmark)
+			printf("mistake: %s 0\n",
+			       iip->instances[i]->name);
+		}
 	    }
-	    else if (iip->instances[i]->sign < 0 && sign > 0) {
-		if (verbose || benchmark)
-		    printf("mistake: %s %d\n", iip->instances[i]->name, sign);
-		false_pos++;
-	    } else if (sign == 0) {
-		ambig++;
-		if (verbose || benchmark)
-		    printf("mistake: %s 0\n", iip->instances[i]->name);
+	    printf("%d %d %d %d\n", iip->ninstances,
+		   ambig, false_pos, false_neg);
+	    break;
+	case MODE_CLASSIFY:
+	    for (i = 0; i < iip->ninstances; i++) {
+		int sign = classify_nbayes(k, iip->instances[i]);
+		if (iip->instances[i]->sign != 0 &&
+		    iip->instances[i]->sign != sign) {
+		    if (verbose || benchmark)
+			printf("mistake: %s %d\n",
+			       iip->instances[i]->name, sign);
+		}
+		printf("%s %d\n", iip->instances[i]->name, sign);
 	    }
+	    break;
+	default:
+	    assert(0);
 	}
-	printf("%d %d %d %d\n", iip->ninstances,
-	       ambig, false_pos, false_neg);
 	if (benchmark) {
 	    times(&t2);
-	    print_times("check", &t1, &t2);
+	    print_times("classify", &t1, &t2);
 	}
 	break;
     default:
