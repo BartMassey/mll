@@ -7,7 +7,7 @@
 
 /* XXX should be changed to use XML */
 
-struct knowledge *read_hamming(FILE *f) {
+struct knowledge *read_hamming(FILE *f, struct params *p) {
     struct knowledge *k = malloc(sizeof (*k));
     
     assert(k);
