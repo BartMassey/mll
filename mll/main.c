@@ -28,7 +28,7 @@ static char *usage_msg = "learner: usage: learner [-b bias] [-s seed] [-dBL] \n"
 		  "  -l   learn instance set\n"
 		  "  -c   classify instance\n"
 		  "  -C   check against instance set\n"
-		  "  -a   learning algorithm\n";
+		  "  -a   learning algorithm";
 static char *options = "b:s:dvBLl:c:C:Sa:";
 static struct option long_options[] = {
     {"bias", 1, 0, 'b'},
