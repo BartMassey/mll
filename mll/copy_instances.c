@@ -37,5 +37,8 @@ struct instances *copy_instances(struct instances *iip) {
 	niip->instances[i]->conditions = _bs_copy(iip->instances[i]->conditions);
     }
 
+    niip->nconditions = iip->nconditions;
+    niip->ninstances = iip->ninstances;
+
     return niip;
 }
