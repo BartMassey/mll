@@ -21,6 +21,11 @@ double eval_neuron(struct knowledge *k,
     }
 
     total += k->weights[k->nconditions];
+
+    // Print confidence value for this classifiction
+    if (p->conf)
+        printf("conf: %f\n", total);
+
     if (use_linear) {
         if (p->use_sigmoid)
             return sigmoid(total, p->sigmoid_k);
