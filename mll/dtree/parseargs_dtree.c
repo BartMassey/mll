@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../mll.h"
+#include "dtree.h"
 
 static char *usage_msg = "learner: dtree: usage: -a dtree [-g mingain] [-c minchisquare]";
 
