@@ -62,7 +62,7 @@ int classify_nbayes(struct knowledge *k,
 
     if (score[1] > score[0])
 	sign = 1;
-    else if (score[0] < score[1])
+    else if (score[0] > score[1])
 	sign = -1;
     else
         sign = 0;

@@ -30,7 +30,7 @@ void write_instances(FILE *f, struct instances *iip) {
 	}
 
 	// name sign conditions
-	fprintf(f, "%s %d %s\n", iip->instances[i]->name, iip->ninstances, buff);
+	fprintf(f, "%s %d %s\n", iip->instances[i]->name, iip->instances[i]->sign, buff);
     }
 
     free(buff);
