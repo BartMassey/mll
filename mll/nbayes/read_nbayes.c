@@ -10,14 +10,22 @@ struct knowledge *read_nbayes(FILE *f) {
     struct knowledge *k = malloc(sizeof (*k));
     
     assert(k);
-    if (fscanf(f, "%d %d\n", &k->nsign[0], &k->nsign[1]) != 2)
+    if (fscanf(f, "%d %d\n", &k->nsign[0], &k->nsign[1]) != 2) {
+	free(k);
 	return 0;
-    if (fscanf(f, "%d\n", &k->nconditions) != 1)
+    }
+    if (fscanf(f, "%d\n", &k->nconditions) != 1) {
+	free(k);
 	return 0;
+    }
     k->counts = malloc(k->nconditions * sizeof(*k->counts));
     assert(k->counts);
-    for (i = 0; i < k->nconditions; i++)
-	if (fscanf(f, "%d %d\n", &k->counts[i][0], &k->counts[i][1]) != 2)
+    for (i = 0; i < k->nconditions; i++) {
+	if (fscanf(f, "%d %d\n", &k->counts[i][0], &k->counts[i][1]) != 2) {
+	    free(k->counts);
+	    free(k);
 	    return 0;
+	}
+    }
     return k;
 }

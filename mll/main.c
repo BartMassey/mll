@@ -16,23 +16,26 @@
 
 char *usage_msg = "psam: usage: psam [-b bias] [-s seed] [-dB] "
                   "(-l|-c|-C) knowledge < instances";
-char *options = "b:s:dBl:c:C:";
+char *options = "b:s:dvBl:c:C:S";
 struct option long_options[] = {
     {"bias", 1, 0, 'b'},
     {"seed", 1, 0, 's'},
     {"debug", 0, 0, 'd'},
+    {"verbose", 0, 0, 'v'},
     {"benchmark", 0, 0, 'B'},
     {"learn", 1, 0, 'l'},
     {"classify", 1, 0, 'c'},
     {"check", 1, 0, 'C'},
+    {"no-shuffle", 1, 0, 'S'},
     {0, 0, 0, 0}
 };
 
 int ntraining;
 int debug = 0;
-int verbose = 1;
+int verbose = 0;
 int benchmark = 0;
 int bias = 0;
+int shuffle = 1;
 
 void usage(void) {
     fprintf(stderr, "%s\n", usage_msg);
@@ -64,7 +67,8 @@ int main(int argc, char **argv) {
 	case 'b': bias = atoi(optarg); break;
 	case 's': seed = atoi(optarg); break;
 	case 'd': debug = 1; break;
-	case 'B': verbose = 0; benchmark = 1; break;
+	case 'v': verbose = 1; break;
+	case 'B': benchmark = 1; break;
 	case 'l':
 	    if (m != MODE_NONE)
 		usage();
@@ -83,53 +87,80 @@ int main(int argc, char **argv) {
 	    m = MODE_CHECK;
 	    kfn = optarg;
 	    break;
+	case 'S':
+	    shuffle = 0;
+	    break;
 	default:  usage();
 	}
     }
 
     switch(m) {
     case MODE_LEARN:
-	if (verbose)
-	    printf("seed: %d\n", seed);
-	srandom(seed);
-
-	times(&t1);
+	if (shuffle) {
+	    if (verbose)
+		printf("seed: %d\n", seed);
+	    srandom(seed);
+	}
+	
+	if (benchmark)
+	    times(&t1);
 	kf = fopen(kfn, "w");
 	if (!kf) {
 	    perror(kfn);
 	    exit(1);
 	}
 	iip = read_instances(stdin);
-	shuffle_instances(iip);
-	times(&t2);
-	print_times("read", &t1, &t2);
+	if (!iip) {
+	    fprintf(stderr,"instance read failure\n");
+	    exit(1);
+	}
+	if (shuffle)
+	    shuffle_instances(iip);
+	if (benchmark) {
+	    times(&t2);
+	    print_times("read", &t1, &t2);
+	}
 
-	t1 = t2;
+	if (benchmark)
+	    t1 = t2;
 	k = learn_nbayes(iip);
-	times(&t2);
-	print_times("train", &t1, &t2);
+	if (benchmark) {
+	    times(&t2);
+	    print_times("train", &t1, &t2);
+	}
 
-	t1 = t2;
+	if (benchmark)
+	    t1 = t2;
 	assert(write_nbayes(kf, k) >= 0);
 	fclose(kf);
-	times(&t2);
-	print_times("write", &t1, &t2);
+	if (benchmark) {
+	    times(&t2);
+	    print_times("write", &t1, &t2);
+	}
 	break;
 	
 
     case MODE_CHECK:
-	times(&t1);
-	kf = fopen(kfn, "w");
+	if (benchmark)
+	    times(&t1);
+	kf = fopen(kfn, "r");
 	if (!kf) {
 	    perror(kfn);
 	    exit(1);
 	}
-	iip = read_instances(stdin);
 	k = read_nbayes(kf);
-	times(&t2);
-	print_times("read", &t1, &t2);
+	iip = read_instances(stdin);
+	if (!k) {
+	    fprintf(stderr, "knowledge read failure\n");
+	    exit(1);
+	}
+	if (benchmark) {
+	    times(&t2);
+	    print_times("read", &t1, &t2);
+	}
 
-	t1 = t2;
+	if (benchmark)
+	    t1 = t2;
 	for (i = 0; i < iip->ninstances; i++) {
 	    int sign = classify_nbayes(k, iip->instances[i]);
 	    if (iip->instances[i]->sign > 0 && sign < 0) {
@@ -149,8 +180,10 @@ int main(int argc, char **argv) {
 	}
 	printf("%d %d %d %d\n", iip->ninstances,
 	       ambig, false_pos, false_neg);
-	times(&t2);
-	print_times("check", &t1, &t2);
+	if (benchmark) {
+	    times(&t2);
+	    print_times("check", &t1, &t2);
+	}
 	break;
     default:
 	usage();

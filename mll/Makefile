@@ -5,7 +5,7 @@
 #
 
 CC = gcc
-CFLAGS = -g -O4 -Wall
+CFLAGS = -g -Wall
 LIBS = -lm
 OBJS = bitset.o read_instances.o shuffle_instances.o
 OBJS_NBAYES = learn_nbayes.o classify_nbayes.o \

@@ -19,7 +19,7 @@ static char *copyn(int nread, char *buf) {
 }
 
 static char *copy(char *buf) {
-    return copyn(strlen(buf), buf);
+    return copyn(strlen(buf) + 1, buf);
 }
 
 static char *getline(FILE *f) {
@@ -154,7 +154,7 @@ struct instances *read_instances(FILE *f) {
     assert(iip->instances);
     i = 0;
     ip = read_buf_instance(buf);
-    if (ip == 0) {
+    if (!ip) {
 	free(iip->instances);
 	free(iip);
 	return 0;
@@ -168,7 +168,7 @@ struct instances *read_instances(FILE *f) {
     } else {
 	iip->nconditions = ip->nconditions;
     }
-    i++;
+    iip->instances[i++] = ip;
 
     while((buf = getline(f))) {
 	if (i >= curinstances - 1) {
@@ -178,7 +178,7 @@ struct instances *read_instances(FILE *f) {
 	    assert(iip->instances);
 	}
 	ip = read_buf_instance(buf);
-	if (ip == 0 || iip->nconditions != ip->nconditions) {
+	if (!ip || iip->nconditions != ip->nconditions) {
 	    free(iip->instances);
 	    free(iip);
 	    return 0;
