@@ -1,5 +1,5 @@
-#include "mll.h"
-#include "instances.h"
+#include "../mll.h"
+#include "../instances.h"
 #include "nbayes.h"
 #ifdef USE_LOGS
 #include <math.h>

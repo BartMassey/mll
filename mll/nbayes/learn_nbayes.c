@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
-#include "mll.h"
-#include "instances.h"
+#include "../mll.h"
+#include "../instances.h"
 #include "nbayes.h"
 
 struct knowledge *learn_nbayes(struct instances *ip,

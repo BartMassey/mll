@@ -1,4 +1,4 @@
-#include "mll.h"
+#include "../mll.h"
 #include "nbayes.h"
 
 /* XXX should be changed to use XML */

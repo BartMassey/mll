@@ -4,7 +4,7 @@
 #include <getopt.h>
 #include <string.h>
 
-#include "mll.h"
+#include "../mll.h"
 
 #ifdef NBAYES_DEMO_ARG
 
