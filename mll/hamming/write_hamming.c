@@ -1,4 +1,5 @@
 #include "../mll.h"
+#include "../instances.h"
 #include "hamming.h"
 
 

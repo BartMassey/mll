@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "../mll.h"
+#include "../instances.h"
 #include "hamming.h"
 
 void kfree_hamming(struct knowledge *k) {
