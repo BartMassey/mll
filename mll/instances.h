@@ -21,3 +21,4 @@ struct instances {
 extern struct instances *read_instances(FILE *);
 extern void shuffle_instances(struct instances *);
 extern void write_instances(FILE *, struct instances *);
+extern void free_instances(struct instances *);
