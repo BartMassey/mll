@@ -1,4 +1,5 @@
 #include "../mll.h"
+#include "../instances.h"
 #include "dtree.h"
 
 dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
@@ -14,7 +15,7 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
     m = count_instances(inst_mask);
     /* all positive */
     if (m.neg == 0 && m.pos > 0) {
-#ifdef DEBUG
+#ifdef DEBUG_DTREE
         debug("positive leaf");
 #endif
         d->val.leaf = m;
@@ -23,7 +24,7 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
     }
     /* all negative */
     if (m.pos == 0 && m.neg > 0) {
-#ifdef DEBUG
+#ifdef DEBUG_DTREE
         debug("negative leaf");
 #endif
         d->val.leaf = m;
@@ -44,7 +45,7 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
         return d;
     }
 
-#ifdef DEBUG
+#ifdef DEBUG_DTREE
     debug("considering %d instances", bs_popcount(inst_mask));
 #endif
     /* find highest gain attr */
@@ -64,13 +65,13 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
     }
 
     assert(best_attr >= 0);  /* weird gain */
-#ifdef DEBUG
+#ifdef DEBUG_DTREE
     debug("best gain %g for %d", best_gain, best_attr);
 #endif
 
     /* corner case: no more attrs */
     if (best_gain < min_gain) {
-#ifdef DEBUG
+#ifdef DEBUG_DTREE
         debug("mixed leaf (low gain)");
 #endif
         d->val.leaf = m;
@@ -81,7 +82,7 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
     /* corner case: no more significance */
     if (min_chisquare > 0 &&
         chisquare(m.pos, m.neg) < min_chisquare) {
-#ifdef DEBUG
+#ifdef DEBUG_DTREE
         debug("mixed leaf (low significance)");
 #endif
         d->val.leaf = m;
@@ -91,20 +92,20 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
 
     /* build pos and neg masks and recurse */
     bs_lset(attr_mask, best_attr);
-#ifdef DEBUG
+#ifdef DEBUG_DTREE
     debug("build neg subtree");
 #endif
     negmask = bs_and(inst_mask, neg_conditions[best_attr]);
     neg = make_dtree(attr_mask, negmask);
     bs_free(negmask);
-#ifdef DEBUG
+#ifdef DEBUG_DTREE
     debug("build pos subtree");
 #endif
     posmask = bs_and(inst_mask, pos_conditions[best_attr]);
     pos = make_dtree(attr_mask, posmask);
     bs_free(posmask);
     bs_lclear(attr_mask, best_attr);
-#ifdef DEBUG
+#ifdef DEBUG_DTREE
     debug("finished interior node");
 #endif
 
@@ -114,5 +115,62 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
     d->tag = DT_NODE;
 
     return d;
+}
+
+dtree_leaf count_instances(bitset mask) {
+    bitset tmp;
+    int pos, neg;
+    dtree_leaf l;
+
+    tmp = bs_and(pos_instances, mask);
+    pos = bs_popcount(tmp);
+    bs_free(tmp);
+    tmp = bs_and(neg_instances, mask);
+    neg = bs_popcount(tmp);
+    bs_free(tmp);
+    l.pos = pos;
+    l.neg = neg;
+    return l;
+}
+
+float instances_entropy(bitset mask) {
+    bitset tmp;
+    int pos, neg, tot;
+
+    tmp = bs_and(pos_instances, mask);
+    pos = bs_popcount(tmp);
+    bs_free(tmp);
+    tmp = bs_and(neg_instances, mask);
+    neg = bs_popcount(tmp);
+    bs_free(tmp);
+    if (pos == 0 || neg == 0)
+        return 0;
+    tot = pos + neg;
+    return an_entropy(pos, tot) + an_entropy(neg, tot);
+}
+
+float an_entropy(int n, int tot) {
+    return -((float)n / tot) * log2((float)n / tot);
+}
+
+float gain(float entropy, bitset mask, int attr) {
+    bitset posmask = bs_and(mask, pos_conditions[attr]);
+    int pos = bs_popcount(posmask);
+    bitset negmask = bs_and(mask, neg_conditions[attr]);
+    int neg = bs_popcount(negmask);
+    int tot = pos + neg;
+    float gtmp = entropy -
+        pos * instances_entropy(posmask) / tot -
+        neg * instances_entropy(negmask) / tot;
+    bs_free(posmask);
+    bs_free(negmask);
+    return gtmp;
+}
+
+float chisquare(int pos, int neg) {
+    float avg = (pos + neg) / 2;
+    float dpos = pos - avg;
+    float dneg = neg - avg;
+    return (dpos * dpos + dneg * dneg) / avg;
 }
 
