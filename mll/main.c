@@ -214,11 +214,11 @@ int main(int argc, char **argv) {
 	    exit(1);
 	}
 	k = learner->read(kf);
-	iip = read_instances(stdin);
 	if (!k) {
 	    fprintf(stderr, "knowledge read failure\n");
 	    exit(1);
 	}
+	iip = read_instances(stdin);
 	if (benchmark) {
 	    times(&t2);
 	    print_times("read", &t1, &t2);
