@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../mll.h"
+#include "neuron.h"
 
 static char *usage_msg = "learner: neuron: usage: -a neuron";
 
@@ -41,9 +42,9 @@ struct params *parseargs_neuron(int argc, char **argv) {
 	case 'r':  p->rate = atoi(optarg); break;
 	case 't':  p->trials = atoi(optarg); p->alltrials = 1; break;
 	case 'c':  p->clip = atof(optarg); break;
-	case 'k':  p->sigmoid = atof(optarg); p->use_sigmoid = 1;
+	case 'k':  p->sigmoid_k = atof(optarg); p->use_sigmoid = 1;
 	/* XXX fall through */
-	case 'd':  p->delta = 1; break;
+	case 'd':  p->use_diff = 1; break;
 	case 'a':  p->average = 0; break;
         default:  usage();
         }
