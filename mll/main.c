@@ -215,7 +215,7 @@ int main(int argc, char **argv) {
 	    perror(kfn);
 	    exit(1);
 	}
-	k = learner->read(kf);
+	k = learner->read(kf, params);
 	if (!k) {
 	    fprintf(stderr, "knowledge read failure\n");
 	    exit(1);

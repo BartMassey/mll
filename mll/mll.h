@@ -9,7 +9,7 @@ struct params;
 
 typedef struct knowledge *learn_t(struct instances *, struct params *);
 typedef int classify_t(struct knowledge *, struct instance *, struct params *);
-typedef struct knowledge *read_t(FILE *);
+typedef struct knowledge *read_t(FILE *, struct params *);
 typedef int write_t(FILE *, struct knowledge *);
 typedef void kfree_t(struct knowledge *);
 typedef struct params* parseargs_t(int argc, char **argv);
