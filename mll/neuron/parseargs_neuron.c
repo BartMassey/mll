@@ -7,10 +7,16 @@
 #include "../mll.h"
 #include "neuron.h"
 
-static char *usage_msg = "learner: neuron: usage: -a neuron";
+static char *usage_msg = "learner: neuron: usage: -a neuron [-r rate] [-t trials] [-c clip] [-k sigmoid_k] [-d] [-A]";
 
-static char *options = "";
+static char *options = "r:t:c:k:dA";
 static struct option long_options[] = {
+    {"rate", 1, 0, 'r'},
+    {"trials", 1, 0, 't'},
+    {"clip", 1, 0, 'c'},
+    {"sigmoid", 1, 0, 'k'},
+    {"delta", 0, 0, 'd'},
+    {"average", 0, 0, 'A'},
     {0, 0, 0, 0}
 };
 
@@ -32,9 +38,6 @@ struct params *parseargs_neuron(int argc, char **argv) {
     p->rate = 0.001;
     p->sigmoid_k = 3;
     p->clip = 10.0;
-
-    /* Bart: average is disabled by default in "offline mode" of old code,
-       should it be disabled here? 					   */
     p->average = 1;
 
     while ((ch = getopt_long(argc, argv, options, long_options, 0)) > 0) {
@@ -45,7 +48,7 @@ struct params *parseargs_neuron(int argc, char **argv) {
 	case 'k':  p->sigmoid_k = atof(optarg); p->use_sigmoid = 1;
 	/* XXX fall through */
 	case 'd':  p->use_diff = 1; break;
-	case 'a':  p->average = 0; break;
+	case 'A':  p->average = 0; break;
         default:  usage();
         }
     }
