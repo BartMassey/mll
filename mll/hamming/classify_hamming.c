@@ -29,5 +29,13 @@ int classify_hamming(struct knowledge *k,
                 nneg++;
         }
     free(ds);
-    return npos - nneg;
+
+    // Print confidence value for this classifiction
+    if (p->conf)
+        printf("conf: %d\n", npos - nneg);
+
+    if (npos - nneg < 0)
+        return -1;
+
+    return 0;
 }
