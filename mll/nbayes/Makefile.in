@@ -1,0 +1,24 @@
+OBJS_NBAYES = learn_nbayes.o classify_nbayes.o \
+  read_nbayes.o write_nbayes.o kfree_nbayes.o parseargs_nbayes.o
+
+$(OBJS_NBAYES): nbayes.h
+
+classify_nbayes.o: classify_nbayes.c
+        $(CC) $(CFLAGS) -DUSE_LOGS -c classify_nbayes.c
+
+learn_nbayes.o: learn_nbayes.c
+        $(CC) $(CFLAGS) -DUSE_LOGS -c learn_nbayes.c
+
+kfree_nbayes.o: kfree_nbayes.c
+        $(CC) $(CFLAGS) -DUSE_LOGS -c kfree_nbayes.c
+
+parseargs_nbayes.o: parseargs_nbayes.c
+        $(CC) $(CFLAGS) -DUSE_LOGS -c parseargs_nbayes.c
+
+read_nbayes.o: read_nbayes.c
+        $(CC) $(CFLAGS) -DUSE_LOGS -c read_nbayes.c
+
+write_nbayes.o: write_nbayes.c
+        $(CC) $(CFLAGS) -DUSE_LOGS -c write_nbayes.c
+
+
