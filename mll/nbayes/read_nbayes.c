@@ -5,7 +5,7 @@
 
 /* XXX should be changed to use XML */
 
-struct knowledge *read_nbayes(FILE *f) {
+struct knowledge *read_nbayes(FILE *f, struct params *p) {
     int i;
     struct knowledge *k = malloc(sizeof (*k));
     
