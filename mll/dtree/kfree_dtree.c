@@ -22,7 +22,7 @@ void kfree_dtree(struct knowledge *k) {
     bs_free(k->instance_mask);
     bs_free(k->condition_mask);
 
-    for (i=0; i < k->ninstances; i++) {
+    for (i=0; i < k->nconditions; i++) {
       bs_free(k->pos_conditions[i]);
       bs_free(k->neg_conditions[i]);
     }
