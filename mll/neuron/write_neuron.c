@@ -4,7 +4,7 @@
 /* XXX should be changed to use XML */
 /* XXX should be able to fail */
 
-int write_nbayes(FILE *f, struct knowledge *k) {
+int write_neuron(FILE *f, struct knowledge *k) {
     int i;
 
     fprintf(f, "%d\n", k->nconditions);
