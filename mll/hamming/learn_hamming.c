@@ -9,6 +9,10 @@ struct knowledge *learn_hamming(struct instances *ip,
 
     assert(k);
 
+    // XXX may want to copy data since theres no guarantee that 
+    //     caller will keep data around [ip] around until 
+    //     write_hamming() is called.
+
     k->ninstances = ip->ninstances;
     k->instances = ip->instances;
 
