@@ -24,7 +24,7 @@ double eval_neuron(struct knowledge *k,
 
     // Print confidence value for this classifiction
     if (p->conf)
-        printf("conf: %f\n", total);
+        printf("conf(%s): %f\n", ip->name, fabs(sigmoid(total, p->sigmoid_k)));
 
     if (use_linear) {
         if (p->use_sigmoid)
