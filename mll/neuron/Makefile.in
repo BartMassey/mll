@@ -1,5 +1,6 @@
 OBJS = learn_neuron.o classify_neuron.o \
-  read_neuron.o write_neuron.o kfree_neuron.o parseargs_neuron.o
+  read_neuron.o write_neuron.o kfree_neuron.o \
+  parseargs_neuron.o eval_neuron.o
 
 all: $(OBJS)
 
@@ -23,6 +24,8 @@ read_neuron.o: read_neuron.c
 write_neuron.o: write_neuron.c
 	$(CC) $(CFLAGS) -c write_neuron.c
 
+eval_neuron.o: eval_neuron.c
+	$(CC) $(CFLAGS) -c eval_neuron.c
 
 clean:
 	rm -f $(OBJS)
