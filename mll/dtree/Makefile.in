@@ -1,5 +1,6 @@
 OBJS = learn_dtree.o classify_dtree.o \
-  read_dtree.o write_dtree.o kfree_dtree.o parseargs_dtree.o
+  read_dtree.o write_dtree.o kfree_dtree.o \
+  parseargs_dtree.o make_dtree.o
 
 all: $(OBJS)
 
@@ -23,6 +24,8 @@ read_dtree.o: read_dtree.c
 write_dtree.o: write_dtree.c
 	$(CC) $(CFLAGS) -c write_dtree.c
 
+make_dtree.o: make_dtree.c
+	$(CC) $(CFLAGS) -c make_dtree.c
 
 clean:
 	rm -f $(OBJS)
