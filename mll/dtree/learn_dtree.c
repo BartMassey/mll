@@ -7,6 +7,17 @@
 
 struct knowledge *learn_dtree(struct instances *iip,
 			      struct params *p) {
+
+    init_masks();
+    init_instances();
+    init_condition_cache();
+
+    no_attrs = bs_new(nconditions);
+    // Start with initial tree with no
+    d = make_dtree(no_attrs, instance_mask);
+
+
+
     int i, j;
     bitset no_attrs;
     struct knowledge *k = malloc(sizeof(*k));
@@ -44,11 +55,12 @@ struct knowledge *learn_dtree(struct instances *iip,
         k->neg_conditions[i] = ntmp;
     }
 
-// xtras
+
     no_attrs = bs_new(iip->nconditions);
+
+    // Make empty dtree
     k->tree = make_dtree(no_attrs, k->instance_mask);
 
-    // XXX not using [no_attrs] anymore?
     bs_free(no_attrs);
 
     return k;
