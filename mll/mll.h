@@ -34,3 +34,10 @@ extern read_t read_hamming;
 extern write_t write_hamming;
 extern kfree_t kfree_hamming;
 extern parseargs_t parseargs_hamming;
+
+extern learn_t learn_dtree;
+extern classify_t classify_dtree;
+extern read_t read_dtree;
+extern write_t write_dtree;
+extern kfree_t kfree_dtree;
+extern parseargs_t parseargs_dtree;
