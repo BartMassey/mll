@@ -10,13 +10,15 @@
 #include <getopt.h>
 #include <time.h>
 #include <sys/times.h>
+#include <string.h>
 
 #include "mll.h"
 #include "instances.h"
 
-char *usage_msg = "psam: usage: psam [-b bias] [-s seed] [-dB] "
-                  "(-l|-c|-C) knowledge < instances";
-char *options = "b:s:dvBl:c:C:S";
+char *usage_msg = "learner: usage: learner [-b bias] [-s seed] [-dB] \n"
+                  "\t(-l|-c|-C) <knowledge-filename> "
+                  "-a algorithm [<algorithm-options>] < instances";
+char *options = "b:s:dvBl:c:C:Sa:";
 struct option long_options[] = {
     {"bias", 1, 0, 'b'},
     {"seed", 1, 0, 's'},
@@ -26,7 +28,8 @@ struct option long_options[] = {
     {"learn", 1, 0, 'l'},
     {"classify", 1, 0, 'c'},
     {"check", 1, 0, 'C'},
-    {"no-shuffle", 1, 0, 'S'},
+    {"no-shuffle", 0, 0, 'S'},
+    {"algorithm", 1, 0, 'a'},
     {0, 0, 0, 0}
 };
 
@@ -36,6 +39,19 @@ int verbose = 0;
 int benchmark = 0;
 int bias = 0;
 int shuffle = 1;
+
+struct learners {
+    char *name;
+    learn_t *learn;
+    classify_t *classify;
+    read_t *read;
+    write_t *write;
+    kfree_t *kfree;
+    parseargs_t *parseargs;
+} learners[] = {
+    {"nbayes", learn_nbayes, classify_nbayes, read_nbayes,
+     write_nbayes, kfree_nbayes, parseargs_nbayes},
+};
 
 void usage(void) {
     fprintf(stderr, "%s\n", usage_msg);
@@ -59,6 +75,7 @@ int main(int argc, char **argv) {
     struct knowledge *k;
     struct instances *iip;
     struct params *params = 0;
+    struct learners *learner = 0;
 
     seed = time(NULL) ^ getpid();
 
@@ -90,8 +107,22 @@ int main(int argc, char **argv) {
 	case 'S':
 	    shuffle = 0;
 	    break;
-	case '-':
-	    params = parseargs_nbayes(argv + 1);
+	case 'a':
+	    for (i = 0;
+		 i < sizeof(learners)/sizeof(struct learners);
+		 i++) {
+		if (!strcmp(learners[i].name, optarg)) {
+		    learner = &learners[i];
+		    break;
+		}
+	    }
+	    if (learner == 0) {
+		fprintf(stderr,
+			"learner: unknown learning algorithm %s\n",
+			optarg);
+		exit(1);
+	    }
+	    params = learner->parseargs(argv);
 	    break;
 	default:  usage();
 	}
@@ -126,7 +157,7 @@ int main(int argc, char **argv) {
 
 	if (benchmark)
 	    t1 = t2;
-	k = learn_nbayes(iip, params);
+	k = learner->learn(iip, params);
 	if (benchmark) {
 	    times(&t2);
 	    print_times("train", &t1, &t2);
@@ -134,7 +165,7 @@ int main(int argc, char **argv) {
 
 	if (benchmark)
 	    t1 = t2;
-	assert(write_nbayes(kf, k) >= 0);
+	assert(learner->write(kf, k) >= 0);
 	fclose(kf);
 	if (benchmark) {
 	    times(&t2);
@@ -152,7 +183,7 @@ int main(int argc, char **argv) {
 	    perror(kfn);
 	    exit(1);
 	}
-	k = read_nbayes(kf);
+	k = learner->read(kf);
 	iip = read_instances(stdin);
 	if (!k) {
 	    fprintf(stderr, "knowledge read failure\n");
@@ -168,7 +199,7 @@ int main(int argc, char **argv) {
 	switch (m) {
 	case MODE_CHECK:
 	    for (i = 0; i < iip->ninstances; i++) {
-		int sign = classify_nbayes(k, iip->instances[i], params);
+		int sign = learner->classify(k, iip->instances[i], params);
 		if (iip->instances[i]->sign > 0 && sign < 0) {
 		    if (verbose || benchmark)
 			printf("mistake: %s %d\n",
@@ -192,7 +223,7 @@ int main(int argc, char **argv) {
 	    break;
 	case MODE_CLASSIFY:
 	    for (i = 0; i < iip->ninstances; i++) {
-		int sign = classify_nbayes(k, iip->instances[i], params);
+		int sign = learner->classify(k, iip->instances[i], params);
 		if (iip->instances[i]->sign != 0 &&
 		    iip->instances[i]->sign != sign) {
 		    if (verbose || benchmark)

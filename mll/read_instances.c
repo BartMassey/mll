@@ -101,6 +101,11 @@ static struct instance *read_buf_instance(char *buf) {
     }
     /* conditions */
     s_conditions = next_tok(&buf);
+    if (!s_conditions) {
+	free(ip->name);
+	free(ip);
+	return 0;
+    }
     ip->nconditions = strlen(s_conditions);
     ip->conditions = bs_new(ip->nconditions);
     for (j = 0; j < ip->nconditions; j++) {
@@ -155,6 +160,7 @@ struct instances *read_instances(FILE *f) {
 	nconditions = iip->nconditions;
 	iip->instances = malloc(ninstances * sizeof(*iip->instances));
 	buf = getline(f);
+	ip = read_buf_instance(buf);
     } else {
 	iip->instances = malloc(curinstances * sizeof(*iip->instances));
     }
