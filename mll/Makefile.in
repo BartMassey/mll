@@ -18,7 +18,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CC = gcc
 CFLAGS = -g -Wall
 LIBS = -lm
-OBJS = bitset.o read_instances.o shuffle_instances.o write_instances.o free_instances.o
+OBJS = bitset.o read_instances.o shuffle_instances.o write_instances.o \
+  free_instances.o copy_instances.o
 
 # Export these variables to sub-makes
 export CC CFLAGS LIBS
@@ -41,6 +42,8 @@ read_instances.o: instances.h read_instances.c bitset.h
 write_instance.o: instances.h write_instances.c bitset.h
 
 free_instances.o: instances.h free_instances.c bitset.h
+
+copy_instances.o: instances.h copy_instances.c bitset.h
 
 distclean: clean
 	-rm -rf autom4te.cache 
