@@ -16,3 +16,4 @@ struct params {
 	average,
 	use_diff;
 };
+

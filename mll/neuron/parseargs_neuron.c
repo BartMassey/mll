@@ -32,36 +32,19 @@ struct params *parseargs_neuron(int argc, char **argv) {
     p->sigmoid_k = 3;
     p->clip = 10.0;
 
-    // Bart: average is disabled in "offline mode" of old code, should it be disabled here?
+    /* Bart: average is disabled by default in "offline mode" of old code,
+       should it be disabled here? 					   */
     p->average = 1;
 
     while ((ch = getopt_long(argc, argv, options, long_options, 0)) > 0) {
         switch(ch) {
-	case 'r':
-	    p->rate = optarg;
-	    break;
-
-	case 't':
-	    p->trials = optarg;
-	    p->alltrials = 1;
-	    break;
-
-	case 'c':
-	    p->clip = optarg;
-	    break;
-
-	case 'k':
-	    p->sigmoid = optarg;
-	    break;
-
-	case 'd':
-	    p->delta = optarg;
-	    break;
-
-	case 'a':
-	    p->average = optarg;
-	    break;
-
+	case 'r':  p->rate = atoi(optarg); break;
+	case 't':  p->trials = atoi(optarg); p->alltrials = 1; break;
+	case 'c':  p->clip = atof(optarg); break;
+	case 'k':  p->sigmoid = atof(optarg); p->use_sigmoid = 1;
+	/* XXX fall through */
+	case 'd':  p->delta = 1; break;
+	case 'a':  p->average = 0; break;
         default:  usage();
         }
     }
