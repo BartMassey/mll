@@ -18,33 +18,22 @@ static void usage(void) {
     exit(1);
 }
 
-/*
-global
-    {"bias", 1, 0, 'b'},
-    {"seed", 1, 0, 's'},
-    {"debug", 0, 0, 'd'},
-    {"verbose", 0, 0, 'v'},
-    {"benchmark", 0, 0, 'B'},
-    {"learn", 1, 0, 'l'},
-    {"classify", 1, 0, 'c'},
-    {"check", 1, 0, 'C'},
-    {"no-shuffle", 0, 0, 'S'},
-    {"algorithm", 1, 0, 'a'},
-neuron
-    {"rate", 1, 0, 'r'},
-    {"trials", 1, 0, 't'},
-    {"clip", 1, 0, 'c'},
-    {"sigmoid", 1, 0, 'k'},
-    {"delta", 0, 0, 'd'},
-    {"average", 0, 0, 'a'},
-*/
-
 struct params *parseargs_neuron(int argc, char **argv) {
     int ch;
-    struct params *p = malloc((size_t) sizeof(struct params));
+    struct params *p = malloc(sizeof (*p));
 
-    if (!p)
-	return NULL;
+    assert(p);
+
+    // Init with default values
+    p->trials = 100;
+    p->alltrials = 0;
+    p->use_diff = 0;
+    p->rate = 0.001;
+    p->sigmoid_k = 3;
+    p->clip = 10.0;
+
+    // Bart: average is disabled in "offline mode" of old code, should it be disabled here?
+    p->average = 1;
 
     while ((ch = getopt_long(argc, argv, options, long_options, 0)) > 0) {
         switch(ch) {
@@ -54,6 +43,7 @@ struct params *parseargs_neuron(int argc, char **argv) {
 
 	case 't':
 	    p->trials = optarg;
+	    p->alltrials = 1;
 	    break;
 
 	case 'c':
@@ -75,6 +65,7 @@ struct params *parseargs_neuron(int argc, char **argv) {
         default:  usage();
         }
     }
-    return 0;
+
+    return p;
 }
 
