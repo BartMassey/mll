@@ -2,6 +2,8 @@
  * Private definitions for neuron learner
  */
 
+#include <math.h>
+
 struct knowledge {
     double *weights,
 	   *delta,
@@ -37,3 +39,15 @@ inline static double sigmoid(double x, double k) {
     return (1 - ex) / (1 + ex);
 }
 
+inline static double do_clip(double clip, double w) {
+    if (clip == 0)
+        return w;
+    if (w > clip)
+        return clip;
+    if (w < -clip)
+        return -clip;
+    return w;
+}
+
+
+double eval_neuron(struct knowledge *, struct instance *, struct params *, int);
