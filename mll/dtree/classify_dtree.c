@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdlib.h>
 
 #include "../mll.h"
 #include "../instances.h"
@@ -18,8 +19,8 @@ dtree_type classify_subtree(dtree *d, struct instance *ip) {
         return DT_MIXED;
     case DT_NODE:
         if (bs_isset(ip->conditions, d->val.node.attr))
-            return classify(d->val.node.pos, ip);
-        return classify(d->val.node.neg, ip);
+            return classify_subtree(d->val.node.pos, ip);
+        return classify_subtree(d->val.node.neg, ip);
     case DT_EMPTY:
         abort();
     }
