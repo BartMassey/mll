@@ -42,6 +42,10 @@ int classify_nbayes(struct knowledge *k,
     for (s = 0; s < 2; s++)
 	score[s] *= k->nsign[s];
 #endif
+
+    if (p->conf)
+        printf("conf: %f\n", fabs((score[0] - score[1]) / (score[0] + score[1])));
+
     if (score[0] > score[1])
 	return -1;
     if (score[1] > score[0])
