@@ -2,18 +2,15 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
-AC_CONFIG_SRCDIR([bitset.c])
+AC_INIT(learner,0.001,bart@cs.pdx.edu)
+AC_CONFIG_SRCDIR([mll.h])
 AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.
-AC_PROG_AWK
 AC_PROG_CC
-AC_PROG_INSTALL
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lm':
-AC_CHECK_LIB([m], [main])
+AC_CHECK_LIB([m], [log])
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -25,5 +22,11 @@ AC_CHECK_HEADERS([stdlib.h string.h unistd.h])
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile
+	         scripts/sa-features/learn
+	         scripts/sa-features/classify
+	         scripts/util/join
+	         scripts/util/joininst
+	         scripts/util/update-sa-prefs
+		 scripts/psam])
 AC_OUTPUT
