@@ -58,7 +58,6 @@ int main(int argc, char **argv) {
     FILE *kf;
     struct knowledge *k;
     struct instances *iip;
-    struct instance *ip;
 
     seed = time(NULL) ^ getpid();
 

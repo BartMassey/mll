@@ -30,3 +30,7 @@ classify_nbayes.o: classify_nbayes.c
 
 clean:
 	-rm -f libmll.a $(OBJS_NBAYES) $(OBJS) main.o psam
+
+distclean: clean
+	-rm -rf autom4te.cache 
+	-rm -f configure config.h config.log config.status configure.scan
