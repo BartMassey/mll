@@ -11,7 +11,7 @@ struct knowledge *read_neuron(FILE *f) {
     
     assert(k);
 
-    if (fscanf(f, "%d\n", &k->nconditions) != 1)) {
+    if (fscanf(f, "%d\n", &k->nconditions) != 1) {
 	free(k);
 	return 0;
     }
