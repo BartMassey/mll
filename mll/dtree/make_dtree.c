@@ -2,6 +2,63 @@
 #include "../instances.h"
 #include "dtree.h"
 
+float chisquare(int pos, int neg) {
+    float avg = (pos + neg) / 2;
+    float dpos = pos - avg;
+    float dneg = neg - avg;
+    return (dpos * dpos + dneg * dneg) / avg;
+}
+
+dtree_leaf count_instances(bitset mask) {
+    bitset tmp;
+    int pos, neg;
+    dtree_leaf l;
+
+    tmp = bs_and(pos_instances, mask);
+    pos = bs_popcount(tmp);
+    bs_free(tmp);
+    tmp = bs_and(neg_instances, mask);
+    neg = bs_popcount(tmp);
+    bs_free(tmp);
+    l.pos = pos;
+    l.neg = neg;
+    return l;
+}
+
+float an_entropy(int n, int tot) {
+    return -((float)n / tot) * log2((float)n / tot);
+}
+
+float instances_entropy(bitset mask) {
+    bitset tmp;
+    int pos, neg, tot;
+
+    tmp = bs_and(pos_instances, mask);
+    pos = bs_popcount(tmp);
+    bs_free(tmp);
+    tmp = bs_and(neg_instances, mask);
+    neg = bs_popcount(tmp);
+    bs_free(tmp);
+    if (pos == 0 || neg == 0)
+        return 0;
+    tot = pos + neg;
+    return an_entropy(pos, tot) + an_entropy(neg, tot);
+}
+
+float gain(float entropy, bitset mask, int attr) {
+    bitset posmask = bs_and(mask, pos_conditions[attr]);
+    int pos = bs_popcount(posmask);
+    bitset negmask = bs_and(mask, neg_conditions[attr]);
+    int neg = bs_popcount(negmask);
+    int tot = pos + neg;
+    float gtmp = entropy -
+        pos * instances_entropy(posmask) / tot -
+        neg * instances_entropy(negmask) / tot;
+    bs_free(posmask);
+    bs_free(negmask);
+    return gtmp;
+}
+
 dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
     dtree_leaf m;
     int best_attr, i;
@@ -115,62 +172,5 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
     d->tag = DT_NODE;
 
     return d;
-}
-
-dtree_leaf count_instances(bitset mask) {
-    bitset tmp;
-    int pos, neg;
-    dtree_leaf l;
-
-    tmp = bs_and(pos_instances, mask);
-    pos = bs_popcount(tmp);
-    bs_free(tmp);
-    tmp = bs_and(neg_instances, mask);
-    neg = bs_popcount(tmp);
-    bs_free(tmp);
-    l.pos = pos;
-    l.neg = neg;
-    return l;
-}
-
-float instances_entropy(bitset mask) {
-    bitset tmp;
-    int pos, neg, tot;
-
-    tmp = bs_and(pos_instances, mask);
-    pos = bs_popcount(tmp);
-    bs_free(tmp);
-    tmp = bs_and(neg_instances, mask);
-    neg = bs_popcount(tmp);
-    bs_free(tmp);
-    if (pos == 0 || neg == 0)
-        return 0;
-    tot = pos + neg;
-    return an_entropy(pos, tot) + an_entropy(neg, tot);
-}
-
-float an_entropy(int n, int tot) {
-    return -((float)n / tot) * log2((float)n / tot);
-}
-
-float gain(float entropy, bitset mask, int attr) {
-    bitset posmask = bs_and(mask, pos_conditions[attr]);
-    int pos = bs_popcount(posmask);
-    bitset negmask = bs_and(mask, neg_conditions[attr]);
-    int neg = bs_popcount(negmask);
-    int tot = pos + neg;
-    float gtmp = entropy -
-        pos * instances_entropy(posmask) / tot -
-        neg * instances_entropy(negmask) / tot;
-    bs_free(posmask);
-    bs_free(negmask);
-    return gtmp;
-}
-
-float chisquare(int pos, int neg) {
-    float avg = (pos + neg) / 2;
-    float dpos = pos - avg;
-    float dneg = neg - avg;
-    return (dpos * dpos + dneg * dneg) / avg;
 }
 
