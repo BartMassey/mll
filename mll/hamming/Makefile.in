@@ -3,7 +3,7 @@ OBJS = learn_hamming.o classify_hamming.o \
 
 all: $(OBJS)
 
-$(OBJS): hamming.h
+$(OBJS): hamming.h ../mll.h
 
 classify_hamming.o: classify_hamming.c
 	$(CC) $(CFLAGS) -c classify_hamming.c

@@ -5,7 +5,7 @@ FLAGS = $(CFLAGS) -DUSE_LOGS
 
 all: $(OBJS_NBAYES)
 
-$(OBJS_NBAYES): nbayes.h
+$(OBJS_NBAYES): nbayes.h ../mll.h
 
 classify_nbayes.o: classify_nbayes.c
 	$(CC) $(FLAGS) -c classify_nbayes.c

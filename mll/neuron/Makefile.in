@@ -4,7 +4,7 @@ OBJS = learn_neuron.o classify_neuron.o \
 
 all: $(OBJS)
 
-$(OBJS): neuron.h
+$(OBJS): neuron.h ../mll.h
 
 classify_neuron.o: classify_neuron.c
 	$(CC) $(CFLAGS) -c classify_neuron.c

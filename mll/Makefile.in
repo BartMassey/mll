@@ -30,6 +30,8 @@ OBJS_LEARNERS = $(patsubst %,%/*.o,$(LEARNERS))
 $(PROG): learners libmll.a main.o
 	$(CC) $(CFLAGS) $(OBJS_LEARNERS) -o $(PROG) main.o libmll.a -lm
 
+main.o: mll.h instances.h
+
 libmll.a: $(OBJS)
 	ar cr libmll.a $(OBJS_LEARNERS) $(OBJS)
 

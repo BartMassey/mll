@@ -4,7 +4,7 @@ OBJS = learn_dtree.o classify_dtree.o \
 
 all: $(OBJS)
 
-$(OBJS): dtree.h
+$(OBJS): dtree.h ../mll.h
 
 classify_dtree.o: classify_dtree.c
 	$(CC) $(CFLAGS) -c classify_dtree.c
