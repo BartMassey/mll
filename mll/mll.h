@@ -20,3 +20,17 @@ extern read_t read_nbayes;
 extern write_t write_nbayes;
 extern kfree_t kfree_nbayes;
 extern parseargs_t parseargs_nbayes;
+
+extern learn_t learn_neuron;
+extern classify_t classify_neuron;
+extern read_t read_neuron;
+extern write_t write_neuron;
+extern kfree_t kfree_neuron;
+extern parseargs_t parseargs_neuron;
+
+extern learn_t learn_hamming;
+extern classify_t classify_hamming;
+extern read_t read_hamming;
+extern write_t write_hamming;
+extern kfree_t kfree_hamming;
+extern parseargs_t parseargs_hamming;
