@@ -118,6 +118,8 @@ float gain(struct knowledge *k, float entropy, bitset mask, int attr) {
 
 /********************************************************
  * PARAM:
+ *   attr_mask - mask of attributes already accounted 
+ *               for by parent nodes
  * DESC: 
  * RETURN: 
  ********************************************************/
