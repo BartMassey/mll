@@ -2,6 +2,11 @@
 #include <assert.h>
 #include <stdio.h>
 
+
+// NOTE: conf is actually signal strength, not confidence measure
+#define DEBUG_CLASS(NAME, TSIGN, SIGN, CONF)    (printf("DEBUG %s %d %d %f\n", NAME, TSIGN, SIGN, CONF))
+
+
 struct instances;
 struct instance;
 struct knowledge;

@@ -28,9 +28,8 @@ static char *usage_msg = "learner: usage: learner [-b bias] [-s seed] [-dBL] \n"
 		  "  -l   learn instance set\n"
 		  "  -c   classify instance\n"
 		  "  -C   check against instance set\n"
-		  "  -a   learning algorithm\n"
-                  "  -V   echo classes while checking";
-static char *options = "b:s:dvBLl:c:C:Sa:V";
+                  "  -a   learning algorithm";
+static char *options = "b:s:dvBLl:c:C:Sa:";
 static struct option long_options[] = {
     {"bias", 1, 0, 'b'},
     {"seed", 1, 0, 's'},
@@ -43,9 +42,6 @@ static struct option long_options[] = {
     {"check", 1, 0, 'C'},
     {"no-shuffle", 0, 0, 'S'},
     {"algorithm", 1, 0, 'a'},
-
-    {"verbosecheck", 0, 0, 'V'},
-
     {0, 0, 0, 0}
 };
 
@@ -97,8 +93,6 @@ int main(int argc, char **argv) {
     struct instances *iip;
     struct params *params = 0;
     struct learners *learner = 0;
-
-    int verbose_check = 0;
 
     seed = time(NULL) ^ getpid();
 
@@ -159,8 +153,6 @@ int main(int argc, char **argv) {
 
 	    // unnessessary, but consistent
 	    break;
-
-        case 'V':  verbose_check = 1; break;
 
 	default:  usage();
 	}
@@ -268,9 +260,6 @@ int main(int argc, char **argv) {
 			printf("mistake: %s 0\n",
 			       iip->instances[i]->name);
 		}
-
-                if (verbose_check)
-                    printf("class(%s): %d %d\n", iip->instances[i]->name, iip->instances[i]->sign, sign);
 	    }
 	    printf("%d %d %d %d\n", iip->ninstances,
 		   ambig, false_pos, false_neg);
