@@ -28,7 +28,7 @@ dtree *classify_subtree(dtree *d, struct instance *ip) {
 int classify_dtree(struct knowledge *k,
 		   struct instance *ip,
 		   struct params *p) {
-    int class;
+    int sign;
     float conf;
     dtree *d = classify_subtree(k->tree, ip);
 
@@ -42,9 +42,9 @@ int classify_dtree(struct knowledge *k,
         conf = 1;
 
         if (d->val.leaf.pos > d->val.leaf.neg)
-            class = 1;
+            sign = 1;
         if (d->val.leaf.pos < d->val.leaf.neg)
-            class = -1;
+            sign = -1;
 
     // mixed node, return most common classification
     } else if (d->tag == DT_MIXED) {
@@ -52,24 +52,24 @@ int classify_dtree(struct knowledge *k,
 //        conf = fabs( ((float)d->val.leaf.pos - d->val.leaf.neg) / (d->val.leaf.pos + d->val.leaf.neg) );
 
         if (d->val.leaf.pos > d->val.leaf.neg) {
-            class = 1;
+            sign = 1;
             conf = (float)d->val.leaf.pos / (d->val.leaf.pos + d->val.leaf.neg);
         } else if (d->val.leaf.pos < d->val.leaf.neg) {
-            class = -1;
+            sign = -1;
             conf = (float)d->val.leaf.neg / (d->val.leaf.pos + d->val.leaf.neg);
         } else {
-            class = 0;
+            sign = 0;
             conf = .5;
         }
 
     // bad node type
     } else {
         conf = 0.5;
-        class = 0;
+        sign = 0;
     }
 
-    if (p->conf)
-        printf("conf(%s): %f\n", ip->name, conf);
+    if (p->debug)
+        DEBUG_CLASS(ip->name, ip->sign, sign, conf);
 
-    return class;
+    return sign;
 }
