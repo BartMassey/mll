@@ -7,7 +7,8 @@ struct knowledge {
 	   *delta,
 	   *best_weights,
 	   *averages;
-    int nconditions;
+    int nconditions,
+	best_score;
 };
 
 struct params {
@@ -18,6 +19,6 @@ struct params {
 	alltrials,
 	average,
 	use_diff,
-	best_score;
+	use_sigmoid;
 };
 
