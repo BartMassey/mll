@@ -3,7 +3,10 @@
  */
 
 struct knowledge {
-    double *weights;
+    double *weights,
+	   *delta,
+	   *best_weights,
+	   *averages;
     int nconditions;
 };
 
@@ -14,6 +17,7 @@ struct params {
     int trials,
 	alltrials,
 	average,
-	use_diff;
+	use_diff,
+	best_score;
 };
 
