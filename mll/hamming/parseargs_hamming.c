@@ -7,11 +7,11 @@
 #include "hamming.h"
 #include "../mll.h"
 
-static char *usage_msg = "learner: hamming: usage: -a hamming [-c]";
+static char *usage_msg = "learner: hamming: usage: -a hamming [-f]";
 
 static char *options = "c";
 static struct option long_options[] = {
-    {"confidence", 0, 0, 'c'},
+    {"confidence", 0, 0, 'f'},
     {0, 0, 0, 0}
 };
 
