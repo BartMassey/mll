@@ -4,6 +4,13 @@
 # for licensing information.
 #
 
+libexecdir = @libexecdir@
+top_srcdir = @top_srcdir@
+SHELL = @SHELL@
+
+LIBEXECDIR = $(DESTDIR)$(libexecdir)
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+
 CC = gcc
 CFLAGS = -g -Wall
 LIBS = -lm
@@ -34,3 +41,7 @@ clean:
 distclean: clean
 	-rm -rf autom4te.cache 
 	-rm -f configure config.h config.log config.status configure.scan
+
+install: psam
+	$(mkinstalldirs) $(LIBEXECDIR)
+	cp psam $(LIBEXECDIR)
