@@ -2,6 +2,12 @@
  * Private definitions for dtree learner
  */
 
+#include <math.h>
+#include "../bitset.h"
+
+
+bitset t;
+
 struct dtree;
 
 typedef struct {
@@ -34,11 +40,15 @@ struct knowledge {
     bitset instance_mask,
 	   condition_mask;
 
+    // Array of bitsets, essentially creating an 
+    // [nconditions] X [ninstances] 2d array.  Each bitset entry
+    // flags which instances displayed the given condition.
     bitset *pos_conditions,
 	   *neg_conditions;
 
     // track instance count for sizeof [pos/neg_conditions]
-    int ninstances;
+    int ninstances,
+        nconditions;
 };
 
 struct params {
@@ -47,9 +57,15 @@ struct params {
 };
 
 
-dtree *make_dtree(bitset, bitset);
+dtree *make_dtree(struct knowledge *k, struct params *p,
+                  bitset, bitset);
 
 
+/********************************************************
+ * PARAM:
+ * DESC: 
+ * RETURN: 
+ ********************************************************/
 inline static float log2(float n) {
     static float kconv = 0;
     if (kconv == 0)
