@@ -18,6 +18,9 @@ typedef struct {
     unsigned *bits;
 } *bitset;
 
+extern bitset str2bitset(char *s);
+extern char *bitset2str(bitset b, char *s);
+
 extern bitset bs_new(int n);
 extern void bs_free(bitset b);
 extern void bs_land(bitset b1, bitset b2);
