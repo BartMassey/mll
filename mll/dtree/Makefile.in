@@ -1,0 +1,28 @@
+OBJS = learn_dtree.o classify_dtree.o \
+  read_dtree.o write_dtree.o kfree_dtree.o parseargs_dtree.o
+
+all: $(OBJS)
+
+$(OBJS): dtree.h
+
+classify_dtree.o: classify_dtree.c
+	$(CC) $(CFLAGS) -c classify_dtree.c
+
+learn_dtree.o: learn_dtree.c
+	$(CC) $(CFLAGS) -c learn_dtree.c
+
+kfree_dtree.o: kfree_dtree.c
+	$(CC) $(CFLAGS) -c kfree_dtree.c
+
+parseargs_dtree.o: parseargs_dtree.c
+	$(CC) $(CFLAGS) -c parseargs_dtree.c
+
+read_dtree.o: read_dtree.c
+	$(CC) $(CFLAGS) -c read_dtree.c
+
+write_dtree.o: write_dtree.c
+	$(CC) $(CFLAGS) -c write_dtree.c
+
+
+clean:
+	rm -f $(OBJS)
