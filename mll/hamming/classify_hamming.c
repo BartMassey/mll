@@ -49,7 +49,7 @@ int classify_hamming(struct knowledge *k,
         else
             conf *= (float)nneg / (npos + nneg);
 
-        printf("conf(%s) %f\n", ip->name, conf);
+        printf("conf(%s): %f\n", ip->name, conf);
     }
 
     if (npos - nneg < 0)
