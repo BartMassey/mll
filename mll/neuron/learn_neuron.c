@@ -57,28 +57,11 @@ double score_weights(struct knowledge *k,
         count[dataset][category]++;
     }
 
-/*
-    if (verbose)
-        printf("%d %d %d",
-           count[TRAINING][FALSE_POSITIVE] +
-           count[TRAINING][FALSE_NEGATIVE],
-           count[VALIDATION][FALSE_POSITIVE],
-           count[VALIDATION][FALSE_NEGATIVE]);
-*/
-
     if (count[VALIDATION][GOOD] > k->best_score) {
         for (i = 0; i < iip->nconditions + 1; i++)
             k->best_weights[i] = k->weights[i];
         k->best_score = count[VALIDATION][GOOD];
-/*
-        if (verbose)
-            printf("*");
-*/
     }
-/*
-    if (verbose)
-        printf("\n");
-*/
 
     validerr = count[VALIDATION][FALSE_POSITIVE] +
                count[VALIDATION][FALSE_NEGATIVE];
