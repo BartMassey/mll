@@ -14,18 +14,24 @@ struct knowledge *learn_nbayes(struct instances *ip,
     assert(k->counts);
     k->nconditions = ip->nconditions;
 
+    // initialize attribute counts
     for (i = 0; i < ip->nconditions; i++)
 	for (j = 0; j < 2; j++)
 	    k->counts[i][j] = 0;
 
+    // initialize class counts
     for (i = 0; i < 2; i++)
 	k->nsign[i] = 0;
+
+    // compute instance counts for each class
     for (i = 0; i < ip->ninstances; i++) {
 	int s = !(ip->instances[i]->sign < 0);
 	k->nsign[s]++;
     }
 
+    // compute instance counts for each attribute
     for (i = 0; i < ip->nconditions; i++) {
+        // count instances with attribute [i] set/unset
 	for (j = 0; j < ip->ninstances; j++) {
 	    int s = !(ip->instances[j]->sign < 0);
 	    if (bs_isset(ip->instances[j]->conditions, i))

@@ -157,6 +157,11 @@ int main(int argc, char **argv) {
 	}
     }
 
+    if (!learner) {
+        fprintf(stderr, "missing learning algorithm\n");
+        usage();
+    }
+
     switch(m) {
     case MODE_LEARN:
 	if (shuffle) {
@@ -230,8 +235,6 @@ int main(int argc, char **argv) {
 	    times(&t2);
 	    print_times("read", &t1, &t2);
 	}
-
-        // Bart: should there be a warning/error if k->nconditions != iip->nconditions?
 
 	if (benchmark)
 	    t1 = t2;
