@@ -15,16 +15,28 @@
 #include "mll.h"
 #include "instances.h"
 
-static char *usage_msg = "learner: usage: learner [-b bias] [-s seed] [-dB] \n"
+static char *usage_msg = "learner: usage: learner [-b bias] [-s seed] [-dBL] \n"
                   "\t(-l|-c|-C) <knowledge-filename> "
-                  "-a algorithm [<algorithm-options>] < instances";
-static char *options = "b:s:dvBl:c:C:Sa:";
+                  "-a algorithm [<algorithm-options>] < instances\n"
+		  "  -b   bias\n"
+		  "  -s   PRNG seed\n"
+		  "  -d   enable debugging message\n"
+		  "  -B   enable benchmarking\n"
+		  "  -v   verbose mode\n"
+		  "  -L   list available learners and exit\n"
+		  "  -S   disable shuffling of instances\n"
+		  "  -l   learn instance set\n"
+		  "  -c   classify instance\n"
+		  "  -C   check against instance set\n"
+		  "  -a   learning algorithm\n";
+static char *options = "b:s:dvBLl:c:C:Sa:";
 static struct option long_options[] = {
     {"bias", 1, 0, 'b'},
     {"seed", 1, 0, 's'},
     {"debug", 0, 0, 'd'},
     {"verbose", 0, 0, 'v'},
     {"benchmark", 0, 0, 'B'},
+    {"learners", 0, 0, 'L'},
     {"learn", 1, 0, 'l'},
     {"classify", 1, 0, 'c'},
     {"check", 1, 0, 'C'},
@@ -50,6 +62,10 @@ static struct learners {
 } learners[] = {
     {"nbayes", learn_nbayes, classify_nbayes, read_nbayes,
      write_nbayes, kfree_nbayes, parseargs_nbayes},
+    {"neuron", learn_neuron, classify_neuron, read_neuron,
+     write_neuron, kfree_neuron, parseargs_neuron},
+    {"hamming", learn_hamming, classify_hamming, read_hamming,
+     write_hamming, kfree_hamming, parseargs_hamming},
 };
 
 static void usage(void) {
@@ -127,6 +143,13 @@ int main(int argc, char **argv) {
 	    argv += optind - 1;
 	    optind = 0;
 	    params = learner->parseargs(argc, argv);
+	    break;
+	case 'L':
+	    for (i = 0; i < sizeof(learners)/sizeof(struct learners); i++)
+		printf("%s\n", learners[i].name);
+	    exit(1);
+
+	    // unnessessary, but consistent
 	    break;
 	default:  usage();
 	}
