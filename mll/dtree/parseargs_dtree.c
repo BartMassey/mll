@@ -7,12 +7,13 @@
 #include "../mll.h"
 #include "dtree.h"
 
-static char *usage_msg = "learner: dtree: usage: -a dtree [-g mingain] [-c minchisquare]";
+static char *usage_msg = "learner: dtree: usage: -a dtree [-g mingain] [-c minchisquare] [-f]";
 
-static char *options = "g:c:";
+static char *options = "g:c:f";
 static struct option long_options[] = {
     {"mingain", 1, 0, 'g'},
     {"minchisquare", 1, 0, 'c'},
+    {"confidence", 0, 0, 'f'},
     {0, 0, 0, 0}
 };
 
@@ -30,11 +31,13 @@ struct params *parseargs_dtree(int argc, char **argv) {
     // Init with default values
     p->min_gain = 0.001;
     p->min_chisquare = 0;
+    p->conf = 0;
 
     while ((ch = getopt_long(argc, argv, options, long_options, 0)) > 0) {
         switch(ch) {
 	case 'g':  p->min_gain = atof(optarg); break;
 	case 'c':  p->min_chisquare = atof(optarg); break;
+        case 'f':  p->conf = 1; break;
         default:  usage();
         }
     }
