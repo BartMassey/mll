@@ -66,6 +66,8 @@ static struct learners {
      write_neuron, kfree_neuron, parseargs_neuron},
     {"hamming", learn_hamming, classify_hamming, read_hamming,
      write_hamming, kfree_hamming, parseargs_hamming},
+    {"dtree", learn_dtree, classify_dtree, read_dtree,
+     write_dtree, kfree_dtree, parseargs_dtree},
 };
 
 static void usage(void) {
@@ -223,6 +225,8 @@ int main(int argc, char **argv) {
 	    times(&t2);
 	    print_times("read", &t1, &t2);
 	}
+
+        // Bart: should there be a warning/error if k->nconditions != iip->nconditions?
 
 	if (benchmark)
 	    t1 = t2;
