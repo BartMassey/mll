@@ -4,6 +4,9 @@
  * for licensing information.
  */
 
+#ifndef __BITSET_H__
+#define __BITSET_H__
+
 typedef struct {
     // Number of bytes in [bits]
     short count;
@@ -39,4 +42,7 @@ extern int bs_isset(bitset b, int i);
 #else
 #define INLINE inline static
 #include "bs_bitops.c"
+#endif
+
+
 #endif
