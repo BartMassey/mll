@@ -5,7 +5,6 @@
 
 void kfree_neuron(struct knowledge *k) {
     free(k->weights);
-    free(k);
 
     if (k->delta)
 	free(k->delta);
@@ -13,4 +12,6 @@ void kfree_neuron(struct knowledge *k) {
 	free(k->best_weights);
     if (k->averages)
 	free(k->averages);
+
+    free(k);
 }
