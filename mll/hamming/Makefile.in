@@ -1,0 +1,28 @@
+OBJS = learn_hamming.o classify_hamming.o \
+  read_hamming.o write_hamming.o kfree_hamming.o parseargs_hamming.o
+
+all: $(OBJS)
+
+$(OBJS): hamming.h
+
+classify_hamming.o: classify_hamming.c
+	$(CC) $(CFLAGS) -c classify_hamming.c
+
+learn_hamming.o: learn_hamming.c
+	$(CC) $(CFLAGS) -c learn_hamming.c
+
+kfree_hamming.o: kfree_hamming.c
+	$(CC) $(CFLAGS) -c kfree_hamming.c
+
+parseargs_hamming.o: parseargs_hamming.c
+	$(CC) $(CFLAGS) -c parseargs_hamming.c
+
+read_hamming.o: read_hamming.c
+	$(CC) $(CFLAGS) -c read_hamming.c
+
+write_hamming.o: write_hamming.c
+	$(CC) $(CFLAGS) -c write_hamming.c
+
+
+clean:
+	rm -f $(OBJS)
