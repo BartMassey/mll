@@ -14,8 +14,6 @@ static void usage(void) {
 }
 
 struct params *parseargs_hamming(int argc, char **argv) {
-    int ch;
-
     return NULL;
 }
 

@@ -1,5 +1,5 @@
 /*
- * Private definitions for neuron learner
+ * Private definitions for hamming learner
  */
 
 /* index is sign of instance */
