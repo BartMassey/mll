@@ -15,6 +15,11 @@ int classify_hamming(struct knowledge *k,
     int min_hdist = k->iip->ninstances + 1;
     int npos = 0, nneg = 0;
 
+    if (ip->nconditions != k->iip->nconditions) {
+        fprintf(stderr, "number of conditions of test instance doesn't match knowledge file");
+        exit(1);
+    }
+
     for (i = 0; i < k->iip->ninstances; i++) {
         bitset x = bs_xor(k->iip->instances[i]->conditions, ip->conditions);
         ds[i] = bs_popcount(x);

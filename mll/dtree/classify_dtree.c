@@ -32,6 +32,11 @@ int classify_dtree(struct knowledge *k,
     float conf;
     dtree *d = classify_subtree(k->tree, ip);
 
+    if (ip->nconditions != k->nconditions) {
+        fprintf(stderr, "number of conditions of test instance doesn't match knowledge file");
+        exit(1);
+    }
+
     // non-mixed leaf node, return given classification
     if (d->tag == DT_POS || d->tag == DT_NEG) {
         conf = 1;
