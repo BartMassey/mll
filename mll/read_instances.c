@@ -136,14 +136,21 @@ struct instances *read_instances(FILE *f) {
     int i;
     struct instances *iip = malloc(sizeof(*iip));
     struct instance *ip;
-    char *buf;
+    char *buf, *buftmp;
     int ninstances = 0;
     int nconditions = 0;
     int curinstances = 512;
 
     assert(iip);
     buf = getline(f);
-    if(sscanf(buf, "%d %d", &iip->ninstances, &iip->nconditions) == 2) {
+    buftmp = copy(buf);
+    ip = read_buf_instance(buftmp);
+    free(buftmp);
+    if (!ip) {
+        if (sscanf(buf, "%d %d", &iip->ninstances, &iip->nconditions) != 2) {
+	    free(ip);
+	    return 0;
+	}
 	ninstances = iip->ninstances;
 	nconditions = iip->nconditions;
 	iip->instances = malloc(ninstances * sizeof(*iip->instances));
@@ -153,7 +160,6 @@ struct instances *read_instances(FILE *f) {
     }
     assert(iip->instances);
     i = 0;
-    ip = read_buf_instance(buf);
     if (!ip) {
 	free(iip->instances);
 	free(iip);
