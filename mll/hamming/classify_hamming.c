@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <math.h>
 
 #include "../mll.h"
 #include "../instances.h"
@@ -32,7 +33,7 @@ int classify_hamming(struct knowledge *k,
 
     // Print confidence value for this classifiction
     if (p->conf)
-        printf("conf: %f\n", fabs((float)(npos - nneg) / (npos + nneg)));
+        printf("conf(%s): %f\n", ip->name, fabs((float)(npos - nneg) / (npos + nneg)));
 
     if (npos - nneg < 0)
         return -1;
