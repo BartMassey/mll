@@ -221,6 +221,11 @@ int main(int argc, char **argv) {
 	    exit(1);
 	}
 	iip = read_instances(stdin);
+        if (!iip) {
+            fprintf(stderr, "instance read failure\n");
+            exit(1);
+        }
+
 	if (benchmark) {
 	    times(&t2);
 	    print_times("read", &t1, &t2);
