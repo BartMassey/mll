@@ -15,11 +15,11 @@
 #include "mll.h"
 #include "instances.h"
 
-char *usage_msg = "learner: usage: learner [-b bias] [-s seed] [-dB] \n"
+static char *usage_msg = "learner: usage: learner [-b bias] [-s seed] [-dB] \n"
                   "\t(-l|-c|-C) <knowledge-filename> "
                   "-a algorithm [<algorithm-options>] < instances";
-char *options = "b:s:dvBl:c:C:Sa:";
-struct option long_options[] = {
+static char *options = "b:s:dvBl:c:C:Sa:";
+static struct option long_options[] = {
     {"bias", 1, 0, 'b'},
     {"seed", 1, 0, 's'},
     {"debug", 0, 0, 'd'},
@@ -33,14 +33,13 @@ struct option long_options[] = {
     {0, 0, 0, 0}
 };
 
-int ntraining;
-int debug = 0;
-int verbose = 0;
-int benchmark = 0;
-int bias = 0;
-int shuffle = 1;
+static int debug = 0;
+static int verbose = 0;
+static int benchmark = 0;
+static int bias = 0;
+static int shuffle = 1;
 
-struct learners {
+static struct learners {
     char *name;
     learn_t *learn;
     classify_t *classify;
@@ -53,12 +52,12 @@ struct learners {
      write_nbayes, kfree_nbayes, parseargs_nbayes},
 };
 
-void usage(void) {
+static void usage(void) {
     fprintf(stderr, "%s\n", usage_msg);
     exit(1);
 }
 
-void print_times(char *what, struct tms *t1, struct tms *t2) {
+static void print_times(char *what, struct tms *t1, struct tms *t2) {
     printf("time(%s): %ld\n", what,
 	   t2->tms_utime + t2->tms_stime - (t1->tms_utime + t1->tms_stime));
 }
@@ -79,7 +78,8 @@ int main(int argc, char **argv) {
 
     seed = time(NULL) ^ getpid();
 
-    while ((ch = getopt_long(argc, argv, options, long_options, 0)) > 0) {
+    while (!learner &&
+	   (ch = getopt_long(argc, argv, options, long_options, 0)) > 0) {
 	switch(ch) {
 	case 'b': bias = atoi(optarg); break;
 	case 's': seed = atoi(optarg); break;
@@ -116,13 +116,17 @@ int main(int argc, char **argv) {
 		    break;
 		}
 	    }
-	    if (learner == 0) {
+	    if (!learner) {
 		fprintf(stderr,
 			"learner: unknown learning algorithm %s\n",
 			optarg);
 		exit(1);
 	    }
-	    params = learner->parseargs(argv);
+	    /* XXX: algorithm name becomes argv[0] */
+	    argc -= optind - 1;
+	    argv += optind - 1;
+	    optind = 0;
+	    params = learner->parseargs(argc, argv);
 	    break;
 	default:  usage();
 	}
