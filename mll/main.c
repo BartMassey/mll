@@ -249,5 +249,8 @@ int main(int argc, char **argv) {
 	usage();
     }
 
+    if (params)
+	free(params);
+
     exit(0);
 }
