@@ -1,7 +1,30 @@
+#include <stdarg.h>
+#include <stdlib.h>
+
 #include "../mll.h"
 #include "../instances.h"
 #include "dtree.h"
 
+
+/********************************************************
+ * PARAM:
+ * DESC: 
+ * RETURN: 
+ ********************************************************/
+void debug(char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    fprintf(stderr, "\n");
+    va_end(ap);
+}
+
+
+/********************************************************
+ * PARAM:
+ * DESC: 
+ * RETURN: 
+ ********************************************************/
 float chisquare(int pos, int neg) {
     float avg = (pos + neg) / 2;
     float dpos = pos - avg;
@@ -9,57 +32,97 @@ float chisquare(int pos, int neg) {
     return (dpos * dpos + dneg * dneg) / avg;
 }
 
-dtree_leaf count_instances(bitset mask) {
+/********************************************************
+ * PARAM:
+ *   k    - knowledge info
+ *   mask - total instances left
+ * DESC: Create leaf node with counts of positive and
+ *       negative instances in [mask].
+ * RETURN: created leaf node
+ ********************************************************/
+dtree_leaf count_instances(struct knowledge *k,
+                           bitset mask) {
     bitset tmp;
     int pos, neg;
     dtree_leaf l;
 
-    tmp = bs_and(pos_instances, mask);
+    // Compute number of positive instances in [mask]
+    tmp = bs_and(k->pos_instances, mask);
     pos = bs_popcount(tmp);
     bs_free(tmp);
-    tmp = bs_and(neg_instances, mask);
+
+    // Compute number of negative instances in [mask]
+    tmp = bs_and(k->neg_instances, mask);
     neg = bs_popcount(tmp);
     bs_free(tmp);
+
+    // Assign computed counts
     l.pos = pos;
     l.neg = neg;
+
     return l;
 }
 
+/********************************************************
+ * PARAM:
+ * DESC: 
+ * RETURN: 
+ ********************************************************/
 float an_entropy(int n, int tot) {
     return -((float)n / tot) * log2((float)n / tot);
 }
 
-float instances_entropy(bitset mask) {
+/********************************************************
+ * PARAM:
+ * DESC: 
+ * RETURN: 
+ ********************************************************/
+float instances_entropy(struct knowledge *k, bitset mask) {
     bitset tmp;
     int pos, neg, tot;
 
-    tmp = bs_and(pos_instances, mask);
+    tmp = bs_and(k->pos_instances, mask);
     pos = bs_popcount(tmp);
     bs_free(tmp);
-    tmp = bs_and(neg_instances, mask);
+
+    tmp = bs_and(k->neg_instances, mask);
     neg = bs_popcount(tmp);
     bs_free(tmp);
+
     if (pos == 0 || neg == 0)
         return 0;
     tot = pos + neg;
     return an_entropy(pos, tot) + an_entropy(neg, tot);
 }
 
-float gain(float entropy, bitset mask, int attr) {
-    bitset posmask = bs_and(mask, pos_conditions[attr]);
+/********************************************************
+ * PARAM:
+ * DESC: 
+ * RETURN: 
+ ********************************************************/
+float gain(struct knowledge *k, float entropy, bitset mask, int attr) {
+    bitset posmask = bs_and(mask, k->pos_conditions[attr]);
     int pos = bs_popcount(posmask);
-    bitset negmask = bs_and(mask, neg_conditions[attr]);
+
+    bitset negmask = bs_and(mask, k->neg_conditions[attr]);
     int neg = bs_popcount(negmask);
+
     int tot = pos + neg;
     float gtmp = entropy -
-        pos * instances_entropy(posmask) / tot -
-        neg * instances_entropy(negmask) / tot;
+        pos * instances_entropy(k, posmask) / tot -
+        neg * instances_entropy(k, negmask) / tot;
     bs_free(posmask);
     bs_free(negmask);
     return gtmp;
 }
 
-dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
+/********************************************************
+ * PARAM:
+ * DESC: 
+ * RETURN: 
+ ********************************************************/
+dtree *make_dtree(struct knowledge *k, struct params *p,
+                  bitset attr_mask, bitset inst_mask) {
     dtree_leaf m;
     int best_attr, i;
     float best_gain, entropy, g;
@@ -69,7 +132,9 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
     d = malloc(sizeof(*d));
     assert(d);
 
-    m = count_instances(inst_mask);
+    // Compute number of positive and negative instances
+    m = count_instances(k, inst_mask);
+
     /* all positive */
     if (m.neg == 0 && m.pos > 0) {
 #ifdef DEBUG_DTREE
@@ -89,7 +154,7 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
         return d;
     }
     /* corner case: no more attrs */
-    if (bs_equal(attr_mask, condition_mask)) {
+    if (bs_equal(attr_mask, k->condition_mask)) {
         debug("mixed leaf (no split)");
         d->val.leaf = m;
         d->tag = DT_MIXED;
@@ -107,14 +172,14 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
 #endif
     /* find highest gain attr */
 
-    entropy = instances_entropy(inst_mask);
+    entropy = instances_entropy(k, inst_mask);
     best_attr = -1;
     best_gain = -1;
 
-    for (i = 0; i < nconditions; i++) {
+    for (i = 0; i < k->nconditions; i++) {
         if (bs_isset(attr_mask, i))
             continue;
-        g = gain(entropy, inst_mask, i);
+        g = gain(k, entropy, inst_mask, i);
         if (g > best_gain) {
             best_attr = i;
             best_gain = g;
@@ -127,7 +192,7 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
 #endif
 
     /* corner case: no more attrs */
-    if (best_gain < min_gain) {
+    if (best_gain < p->min_gain) {
 #ifdef DEBUG_DTREE
         debug("mixed leaf (low gain)");
 #endif
@@ -137,8 +202,8 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
     }
 
     /* corner case: no more significance */
-    if (min_chisquare > 0 &&
-        chisquare(m.pos, m.neg) < min_chisquare) {
+    if (p->min_chisquare > 0 &&
+        chisquare(m.pos, m.neg) < p->min_chisquare) {
 #ifdef DEBUG_DTREE
         debug("mixed leaf (low significance)");
 #endif
@@ -149,19 +214,25 @@ dtree *make_dtree(bitset attr_mask, bitset inst_mask) {
 
     /* build pos and neg masks and recurse */
     bs_lset(attr_mask, best_attr);
+
 #ifdef DEBUG_DTREE
     debug("build neg subtree");
 #endif
-    negmask = bs_and(inst_mask, neg_conditions[best_attr]);
-    neg = make_dtree(attr_mask, negmask);
+    // build neg subtree
+    negmask = bs_and(inst_mask, k->neg_conditions[best_attr]);
+    neg = make_dtree(k, p, attr_mask, negmask);
     bs_free(negmask);
+
 #ifdef DEBUG_DTREE
     debug("build pos subtree");
 #endif
-    posmask = bs_and(inst_mask, pos_conditions[best_attr]);
-    pos = make_dtree(attr_mask, posmask);
+    // build pos subtree
+    posmask = bs_and(inst_mask, k->pos_conditions[best_attr]);
+    pos = make_dtree(k, p, attr_mask, posmask);
     bs_free(posmask);
+
     bs_lclear(attr_mask, best_attr);
+
 #ifdef DEBUG_DTREE
     debug("finished interior node");
 #endif
