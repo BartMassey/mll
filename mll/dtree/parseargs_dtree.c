@@ -6,9 +6,9 @@
 
 #include "../mll.h"
 
-static char *usage_msg = "learner: dtree: usage: -a dtree";
+static char *usage_msg = "learner: dtree: usage: -a dtree [-g mingain] [-c minchisquare]";
 
-static char *options = "";
+static char *options = "g:c:";
 static struct option long_options[] = {
     {"mingain", 1, 0, 'g'},
     {"minchisquare", 1, 0, 'c'},
