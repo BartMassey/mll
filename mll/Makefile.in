@@ -20,7 +20,7 @@ CFLAGS = -g -Wall
 LIBS = -lm
 OBJS = bitset.o read_instances.o shuffle_instances.o
 OBJS_NBAYES = learn_nbayes.o classify_nbayes.o \
-  read_nbayes.o write_nbayes.o kfree_nbayes.o
+  read_nbayes.o write_nbayes.o kfree_nbayes.o parseargs_nbayes.o
 
 $(PROG): libmll.a main.o
 	$(CC) $(CFLAGS) -o $(PROG) main.o libmll.a -lm

@@ -5,7 +5,9 @@
 #include <math.h>
 #endif
 
-int classify_nbayes(struct knowledge *k, struct instance *ip) {
+int classify_nbayes(struct knowledge *k,
+		    struct instance *ip,
+		    struct params *p) {
     int j, s;
     double score[2];
     float m = 1.0;

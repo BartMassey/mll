@@ -58,6 +58,7 @@ int main(int argc, char **argv) {
     FILE *kf;
     struct knowledge *k;
     struct instances *iip;
+    struct params *params = 0;
 
     seed = time(NULL) ^ getpid();
 
@@ -88,6 +89,9 @@ int main(int argc, char **argv) {
 	    break;
 	case 'S':
 	    shuffle = 0;
+	    break;
+	case '-':
+	    params = parseargs_nbayes(argv + 1);
 	    break;
 	default:  usage();
 	}
@@ -122,7 +126,7 @@ int main(int argc, char **argv) {
 
 	if (benchmark)
 	    t1 = t2;
-	k = learn_nbayes(iip);
+	k = learn_nbayes(iip, params);
 	if (benchmark) {
 	    times(&t2);
 	    print_times("train", &t1, &t2);
@@ -164,7 +168,7 @@ int main(int argc, char **argv) {
 	switch (m) {
 	case MODE_CHECK:
 	    for (i = 0; i < iip->ninstances; i++) {
-		int sign = classify_nbayes(k, iip->instances[i]);
+		int sign = classify_nbayes(k, iip->instances[i], params);
 		if (iip->instances[i]->sign > 0 && sign < 0) {
 		    if (verbose || benchmark)
 			printf("mistake: %s %d\n",
@@ -188,7 +192,7 @@ int main(int argc, char **argv) {
 	    break;
 	case MODE_CLASSIFY:
 	    for (i = 0; i < iip->ninstances; i++) {
-		int sign = classify_nbayes(k, iip->instances[i]);
+		int sign = classify_nbayes(k, iip->instances[i], params);
 		if (iip->instances[i]->sign != 0 &&
 		    iip->instances[i]->sign != sign) {
 		    if (verbose || benchmark)

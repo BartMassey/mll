@@ -4,7 +4,8 @@
 #include "instances.h"
 #include "nbayes.h"
 
-struct knowledge *learn_nbayes(struct instances *ip) {
+struct knowledge *learn_nbayes(struct instances *ip,
+			       struct params *p) {
     int i, j;
     struct knowledge *k = malloc(sizeof(*k));
 
