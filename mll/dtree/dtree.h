@@ -5,8 +5,8 @@
 #include <math.h>
 #include "../bitset.h"
 
+#define max(x, y)       ((x < y) ? y : x)
 
-bitset t;
 
 struct dtree;
 
