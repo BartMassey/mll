@@ -22,7 +22,7 @@ struct params {
 	average,
 	use_diff,
 	use_sigmoid,
-        conf;
+        debug;
 };
 
 /* these functions should be inlined for "speed" */

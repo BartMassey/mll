@@ -7,11 +7,11 @@
 #include "hamming.h"
 #include "../mll.h"
 
-static char *usage_msg = "learner: hamming: usage: -a hamming [-f]";
+static char *usage_msg = "learner: hamming: usage: -a hamming [-D]";
 
-static char *options = "f";
+static char *options = "D";
 static struct option long_options[] = {
-    {"confidence", 0, 0, 'f'},
+    {"ldebug", 0, 0, 'D'},
     {0, 0, 0, 0}
 };
 
@@ -27,11 +27,11 @@ struct params *parseargs_hamming(int argc, char **argv) {
     assert(p);
 
     // Init with default values
-    p->conf = 0;
+    p->debug = 0;
 
     while ((ch = getopt_long(argc, argv, options, long_options, 0)) > 0) {
         switch(ch) {
-        case 'f':  p->conf = 1; break;
+        case 'D':  p->debug = 1; break;
         default:  usage();
         }
     }

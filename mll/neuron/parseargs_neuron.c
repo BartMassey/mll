@@ -7,9 +7,9 @@
 #include "../mll.h"
 #include "neuron.h"
 
-static char *usage_msg = "learner: neuron: usage: -a neuron [-r rate] [-t trials] [-c clip] [-k sigmoid_k] [-d] [-f] [-A]";
+static char *usage_msg = "learner: neuron: usage: -a neuron [-r rate] [-t trials] [-c clip] [-k sigmoid_k] [-d] [-D] [-A]";
 
-static char *options = "r:t:c:k:dAf";
+static char *options = "r:t:c:k:dAD";
 static struct option long_options[] = {
     {"rate", 1, 0, 'r'},
     {"trials", 1, 0, 't'},
@@ -17,7 +17,7 @@ static struct option long_options[] = {
     {"sigmoid", 1, 0, 'k'},
     {"delta", 0, 0, 'd'},
     {"average", 0, 0, 'A'},
-    {"confidence", 0, 0, 'f'},
+    {"ldebug", 0, 0, 'D'},
     {0, 0, 0, 0}
 };
 
@@ -40,7 +40,7 @@ struct params *parseargs_neuron(int argc, char **argv) {
     p->sigmoid_k = 3;
     p->clip = 10.0;
     p->average = 1;
-    p->conf = 0;
+    p->debug = 0;
 
     while ((ch = getopt_long(argc, argv, options, long_options, 0)) > 0) {
         switch(ch) {
@@ -51,7 +51,7 @@ struct params *parseargs_neuron(int argc, char **argv) {
 	/* XXX fall through */
 	case 'd':  p->use_diff = 1; break;
 	case 'A':  p->average = 0; break;
-        case 'f':  p->conf = 1; break;
+        case 'D':  p->debug = 1; break;
         default:  usage();
         }
     }

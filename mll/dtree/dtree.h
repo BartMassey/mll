@@ -54,7 +54,7 @@ struct knowledge {
 struct params {
     double min_gain,
 	   min_chisquare;
-    int conf;
+    int debug;
 };
 
 

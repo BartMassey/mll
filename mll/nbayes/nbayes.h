@@ -12,5 +12,5 @@ struct knowledge {
 };
 
 struct params {
-    int conf;
+    int debug;
 };
