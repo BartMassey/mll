@@ -8,6 +8,74 @@
 #include <stdlib.h>
 #include "bitset.h"
 
+
+static int strlen(const char *s) {
+    int a = 0;
+
+    for (a = 0; *(s++) != '\0'; a++);
+
+    return a;
+}
+
+/************************************************
+ * PARAM:
+ *   s - string to read from
+ * DESC: Create bitset from string [s].
+ * NOTE: Does not set [neg] flag.
+ * RETURN: created bitset
+ ************************************************/
+bitset str2bitset(char *s) {
+    bitset b;
+    int l, i;
+
+    l = strlen(s);
+    assert(l);
+
+    b = bs_new(l);
+    assert(b);
+
+    for (i = 0; i < l; i++)
+        if (s[i] == '1')
+            bs_lset(b, i);
+
+    return b;
+}
+
+/************************************************
+ * PARAM:
+ *   b - bitset to read from
+ *   s - string to write to
+ * DESC: Convert bitset [b] to string of ascii 
+ *       1s and 0s.  Allocates memory if [s] is
+ *       NULL.
+ * NOTE: If [s] is set, it is assumed to be at 
+ *       least b->count * 32 bytes + 1 bytes.
+ * NOTE: Does not save [neg] flag.
+ * RETURN: s if non-null, else allocated memory
+ ************************************************/
+char *bitset2str(bitset b, char *s) {
+    int i, l;
+
+    // get bitcount from [b]
+    l = b->count << 5;
+
+    if (s == NULL) {
+        s = malloc(l * sizeof(char) + 1);
+        assert(s);
+    }
+
+    for (i = 0; i < l; i++) {
+        if (bs_isset(b, i))
+            s[i] = '1';
+        else
+            s[i] = '0';
+    }
+
+    s[l] = '\0';
+
+    return s;
+}
+
 /************************************************
  * PARAM:                                       *
  *   n - size of bit vector in bits             *
@@ -213,8 +281,9 @@ bitset bs_not(bitset b0) {
 
 /************************************************
  * PARAM:                                       *
- * DESC: 
- * RETURN: 
+ *   n - 4 byte buffer                          *
+ * DESC: Compute the number of set bits in [n]. *
+ * RETURN: number of set bits                   *
  ************************************************/
 static unsigned count_bits (unsigned n) {
     unsigned c3 = 0x0f0f0f0f;
