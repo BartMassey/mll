@@ -5,8 +5,13 @@
  */
 
 typedef struct {
+    // Number of bytes in [bits]
     short count;
+
+    // Flag: indicates [bits] represents negative value
     short neg;
+
+    // Bit buffer
     unsigned *bits;
 } *bitset;
 
