@@ -1,0 +1,28 @@
+OBJS = learn_neuron.o classify_neuron.o \
+  read_neuron.o write_neuron.o kfree_neuron.o parseargs_neuron.o
+
+all: $(OBJS)
+
+$(OBJS): neuron.h
+
+classify_neuron.o: classify_neuron.c
+	$(CC) $(CFLAGS) -c classify_neuron.c
+
+learn_neuron.o: learn_neuron.c
+	$(CC) $(CFLAGS) -c learn_neuron.c
+
+kfree_neuron.o: kfree_neuron.c
+	$(CC) $(CFLAGS) -c kfree_neuron.c
+
+parseargs_neuron.o: parseargs_neuron.c
+	$(CC) $(CFLAGS) -c parseargs_neuron.c
+
+read_neuron.o: read_neuron.c
+	$(CC) $(CFLAGS) -c read_neuron.c
+
+write_neuron.o: write_neuron.c
+	$(CC) $(CFLAGS) -c write_neuron.c
+
+
+clean:
+	rm -f $(OBJS)
