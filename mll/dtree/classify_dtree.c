@@ -49,14 +49,18 @@ int classify_dtree(struct knowledge *k,
     // mixed node, return most common classification
     } else if (d->tag == DT_MIXED) {
         // Get absolute value of conf
-        conf = fabs( ((float)d->val.leaf.pos - d->val.leaf.neg) / (d->val.leaf.pos + d->val.leaf.neg) );
+//        conf = fabs( ((float)d->val.leaf.pos - d->val.leaf.neg) / (d->val.leaf.pos + d->val.leaf.neg) );
 
-        if (d->val.leaf.pos > d->val.leaf.neg)
+        if (d->val.leaf.pos > d->val.leaf.neg) {
             class = 1;
-        else if (d->val.leaf.pos < d->val.leaf.neg)
+            conf = (float)d->val.leaf.pos / (d->val.leaf.pos + d->val.leaf.neg);
+        } else if (d->val.leaf.pos < d->val.leaf.neg) {
             class = -1;
-        else
+            conf = (float)d->val.leaf.neg / (d->val.leaf.pos + d->val.leaf.neg);
+        } else {
             class = 0;
+            conf = .5;
+        }
 
     // bad node type
     } else {
