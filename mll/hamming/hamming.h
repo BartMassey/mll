@@ -2,6 +2,9 @@
  * Private definitions for hamming learner
  */
 
-struct knowledge {
-};
+#include "../instances.h"
 
+struct knowledge {
+    int ninstances;
+    struct instance **instances;
+}
