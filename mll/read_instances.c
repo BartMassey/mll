@@ -92,7 +92,10 @@ static struct instance *read_buf_instance(char *buf) {
 	return 0;
     }
     ip->name = copy(s_name);
-    /* sign */
+
+    /* sign
+       NOTE: +1 = spam
+             -1 = non-spam */
     s_sign = next_tok(&buf);
     if (!s_sign || sscanf(s_sign, "%d", &ip->sign) != 1) {
 	free(ip->name);
