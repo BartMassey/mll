@@ -24,6 +24,9 @@ struct knowledge *read_neuron(FILE *f) {
 	return 0;
     }
 
+    k->delta = NULL;
+    k->best_weights = NULL;
+
     for (i=0; i < k->nconditions; i++) {
 	if (fscanf(f, "%d %lg\n", &t, k->weights + i) != 2) {
 	    free(k);
