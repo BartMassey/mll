@@ -23,10 +23,5 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 
 AC_CONFIG_FILES([Makefile
-	         scripts/sa-features/learn
-	         scripts/sa-features/classify
-	         scripts/util/join
-	         scripts/util/joininst
-	         scripts/util/update-sa-prefs
-		 scripts/psam])
+		 nbayes/Makefile])
 AC_OUTPUT

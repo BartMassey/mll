@@ -19,28 +19,24 @@ CC = gcc
 CFLAGS = -g -Wall
 LIBS = -lm
 OBJS = bitset.o read_instances.o shuffle_instances.o
-OBJS_NBAYES = learn_nbayes.o classify_nbayes.o \
-  read_nbayes.o write_nbayes.o kfree_nbayes.o parseargs_nbayes.o
 
-$(PROG): libmll.a main.o
-	$(CC) $(CFLAGS) -o $(PROG) main.o libmll.a -lm
+# Export these variables to sub-makes
+export CC CFLAGS LIBS
 
-libmll.a: $(OBJS_NBAYES) $(OBJS)
-	ar cr libmll.a $(OBJS_NBAYES) $(OBJS)
+LEARNERS = nbayes
+OBJS_LEARNERS = $(patsubst %,%/*.o,$(LEARNERS))
 
-$(OBJS_NBAYES): nbayes.h
+$(PROG): learners libmll.a main.o
+	$(CC) $(CFLAGS) $(OBJS_LEARNERS) -o $(PROG) main.o libmll.a -lm
+
+libmll.a: $(OBJS)
+	ar cr libmll.a $(OBJS_LEARNERS) $(OBJS)
 
 bitset.o: bitset.h
 
 bitset.h: bs_bitops.c
 
 read_instances.o: instances.h bitset.h
-
-classify_nbayes.o: classify_nbayes.c
-	$(CC) $(CFLAGS) -DUSE_LOGS -c classify_nbayes.c
-
-clean:
-	-rm -f libmll.a $(OBJS_NBAYES) $(OBJS) main.o $(PROG)
 
 distclean: clean
 	-rm -rf autom4te.cache 
@@ -49,3 +45,13 @@ distclean: clean
 install: $(PROG)
 	$(mkinstalldirs) $(BINDIR)
 	cp $(PROG) $(BINDIR)
+
+# Make each learner in sub-directories
+learners:
+	$(foreach SUBDIR,$(LEARNERS),$(MAKE) -C $(SUBDIR))
+
+clean:
+	$(foreach SUBDIR,$(LEARNERS),$(MAKE) -C $(SUBDIR) clean)
+	-rm -f libmll.a $(OBJS) main.o $(PROG)
+
+
