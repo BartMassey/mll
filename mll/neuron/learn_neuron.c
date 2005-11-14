@@ -29,11 +29,11 @@ double score_weights(struct knowledge *k,
 		     struct params *p) {
     int i;
     enum dataset { TRAINING, VALIDATION };
-    enum category { GOOD, FALSE_POSITIVE, FALSE_NEGATIVE };
-    int count[2][3] = {{0,0,0},{0,0,0}};
+    enum category { GOOD, FALSE_POSITIVE, FALSE_NEGATIVE, AMBIGUOUS };
+    int count[2][4] = {{0,0,0},{0,0,0}};
     enum dataset dataset;
     enum category category;
-    int validerr;
+    double curscore, validerr;
 
     int ntraining = iip->ninstances / 3;
 
@@ -51,21 +51,23 @@ double score_weights(struct knowledge *k,
         else if (v < 0 && iip->instances[i]->sign > 0)
             category = FALSE_NEGATIVE;
         else if (v == 0)
-            abort();
+            category = AMBIGUOUS;
         else
             category = GOOD;
         count[dataset][category]++;
     }
 
-    if (count[VALIDATION][GOOD] > k->best_score) {
+    curscore = count[VALIDATION][GOOD] + 0.5 * count[VALIDATION][AMBIGUOUS];
+    if (curscore > k->best_score) {
         for (i = 0; i < iip->nconditions + 1; i++)
             k->best_weights[i] = k->weights[i];
-        k->best_score = count[VALIDATION][GOOD];
+        k->best_score = curscore;
     }
 
     validerr = count[VALIDATION][FALSE_POSITIVE] +
-               count[VALIDATION][FALSE_NEGATIVE];
-    return (double) validerr / (validerr + count[VALIDATION][GOOD]);
+               count[VALIDATION][FALSE_NEGATIVE] +
+	       0.5 * count[VALIDATION][AMBIGUOUS];
+    return validerr / (validerr + count[VALIDATION][GOOD]);
 }
 
 

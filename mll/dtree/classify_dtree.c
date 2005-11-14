@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -43,8 +44,10 @@ int classify_dtree(struct knowledge *k,
 
         if (d->val.leaf.pos > d->val.leaf.neg)
             sign = 1;
-        if (d->val.leaf.pos < d->val.leaf.neg)
+        else if (d->val.leaf.pos < d->val.leaf.neg)
             sign = -1;
+	else
+	    assert(0);
 
     // mixed node, return most common classification
     } else if (d->tag == DT_MIXED) {

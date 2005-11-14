@@ -11,8 +11,10 @@
  * DESC: 
  * RETURN: 
  ********************************************************/
-void debug(char *fmt, ...) {
+void debug(int debugmode, char *fmt, ...) {
     va_list ap;
+    if (!debugmode)
+	return;
     va_start(ap, fmt);
     vfprintf(stderr, fmt, ap);
     fprintf(stderr, "\n");
@@ -140,7 +142,7 @@ dtree *make_dtree(struct knowledge *k, struct params *p,
     /* all positive */
     if (m.neg == 0 && m.pos > 0) {
 #ifdef DEBUG_DTREE
-        debug("positive leaf");
+        debug(p->debug, "positive leaf");
 #endif
         d->val.leaf = m;
         d->tag = DT_POS;
@@ -149,7 +151,7 @@ dtree *make_dtree(struct knowledge *k, struct params *p,
     /* all negative */
     if (m.pos == 0 && m.neg > 0) {
 #ifdef DEBUG_DTREE
-        debug("negative leaf");
+        debug(p->debug, "negative leaf");
 #endif
         d->val.leaf = m;
         d->tag = DT_NEG;
@@ -157,20 +159,20 @@ dtree *make_dtree(struct knowledge *k, struct params *p,
     }
     /* corner case: no more attrs */
     if (bs_equal(attr_mask, k->condition_mask)) {
-        debug("mixed leaf (no split)");
+        debug(p->debug, "mixed leaf (no split)");
         d->val.leaf = m;
         d->tag = DT_MIXED;
         return d;
     }
     /* corner case: no more instances */
     if (m.pos == 0 && m.neg == 0) {
-        debug("empty leaf");
+        debug(p->debug, "empty leaf");
         d->tag = DT_EMPTY;
         return d;
     }
 
 #ifdef DEBUG_DTREE
-    debug("considering %d instances", bs_popcount(inst_mask));
+    debug(p->debug, "considering %d instances", bs_popcount(inst_mask));
 #endif
     /* find highest gain attr */
 
@@ -190,13 +192,13 @@ dtree *make_dtree(struct knowledge *k, struct params *p,
 
     assert(best_attr >= 0);  /* weird gain */
 #ifdef DEBUG_DTREE
-    debug("best gain %g for %d", best_gain, best_attr);
+    debug(p->debug, "best gain %g for %d", best_gain, best_attr);
 #endif
 
     /* corner case: no more attrs */
     if (best_gain < p->min_gain) {
 #ifdef DEBUG_DTREE
-        debug("mixed leaf (low gain)");
+        debug(p->debug, "mixed leaf (low gain)");
 #endif
         d->val.leaf = m;
         d->tag = DT_MIXED;
@@ -207,7 +209,7 @@ dtree *make_dtree(struct knowledge *k, struct params *p,
     if (p->min_chisquare > 0 &&
         chisquare(m.pos, m.neg) < p->min_chisquare) {
 #ifdef DEBUG_DTREE
-        debug("mixed leaf (low significance)");
+        debug(p->debug, "mixed leaf (low significance)");
 #endif
         d->val.leaf = m;
         d->tag = DT_MIXED;
@@ -218,7 +220,7 @@ dtree *make_dtree(struct knowledge *k, struct params *p,
     bs_lset(attr_mask, best_attr);
 
 #ifdef DEBUG_DTREE
-    debug("build neg subtree");
+    debug(p->debug, "build neg subtree");
 #endif
     // build neg subtree
     negmask = bs_and(inst_mask, k->neg_conditions[best_attr]);
@@ -226,7 +228,7 @@ dtree *make_dtree(struct knowledge *k, struct params *p,
     bs_free(negmask);
 
 #ifdef DEBUG_DTREE
-    debug("build pos subtree");
+    debug(p->debug, "build pos subtree");
 #endif
     // build pos subtree
     posmask = bs_and(inst_mask, k->pos_conditions[best_attr]);
@@ -236,7 +238,7 @@ dtree *make_dtree(struct knowledge *k, struct params *p,
     bs_lclear(attr_mask, best_attr);
 
 #ifdef DEBUG_DTREE
-    debug("finished interior node");
+    debug(p->debug, "finished interior node");
 #endif
 
     d->val.node.attr = best_attr;

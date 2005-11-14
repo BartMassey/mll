@@ -166,6 +166,8 @@ struct instances *read_instances(FILE *f) {
 	ip = read_buf_instance(buf);
     } else {
 	iip->instances = malloc(curinstances * sizeof(*iip->instances));
+	iip->nconditions = 0;
+	iip->ninstances = 0;
     }
     assert(iip->instances);
     i = 0;
@@ -200,7 +202,7 @@ struct instances *read_instances(FILE *f) {
 	}
 	iip->instances[i++] = ip;
     }
-    if (iip->ninstances && iip->ninstances != i) {
+    if (iip->ninstances > 0 && iip->ninstances != i) {
 	    free(iip->instances);
 	    free(iip);
 	    return 0;
