@@ -7,5 +7,6 @@ struct knowledge {
 };
 
 struct params {
+    int radius;
     int debug;
 };
