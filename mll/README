@@ -1,0 +1,33 @@
+This directory contains code for various machine-learning
+algorithms.  All operate on binary features and produce
+binary classifications.
+
+Partly for historical reasons, the input file format is as
+follows.  First, an optional line contains the number of
+instances and number of attributes per instance.  This is a
+historical relic, and normally ignored.  Next come
+instances, one per line, of the format
+  name class attrs
+where name is an arbitrary identifier containing no
+whitespace, class is either 1 or -1 (yes, ugly), and
+attrs is a bit vector of Boolean attributes, e.g. 11010.
+
+There is a library here, and also a driver program.  The
+library interface is fairly straightforward, and you can
+examine the driver code to understand it better.
+
+The driver program can serve as both a learner and a
+classifier.  In learning mode, it reads an instance file
+from standard input and produces a file containining learned
+knowledge for some algorithm.  In classification mode, the
+driver uses a knowledge file to classify or check an
+instance file presented on standard input.  There are
+generic driver program options, and also per-learner
+options; invoke as "learner -a foo -h" to see the latter.
+
+There are probably a million bugs and misfeatures.  Notes on
+these would be appreciated.
+
+    Bart Massey
+    Mick Thomure
+    2005/11/13
