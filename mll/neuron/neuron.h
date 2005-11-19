@@ -16,7 +16,8 @@ struct knowledge {
 struct params {
     double rate,
 	   clip,
-	   sigmoid_k;
+	   sigmoid_k,
+	   stopfrac;
     int trials,
 	alltrials,
 	average,

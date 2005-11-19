@@ -155,7 +155,7 @@ struct knowledge *learn_neuron(struct instances *ip,
     for (i = 0; i < p->trials; i++) {
         train(k, ip, p);
         frac = score_weights(k, ip, p);
-        if (!p->alltrials && frac < 0.005)
+        if (!p->alltrials && frac < p->stopfrac)
             break;
     }
 
