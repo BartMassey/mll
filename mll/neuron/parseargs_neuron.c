@@ -7,12 +7,13 @@
 #include "../mll.h"
 #include "neuron.h"
 
-static char *usage_msg = "learner: neuron: usage: -a neuron [-r rate] [-t trials] [-c clip] [-k sigmoid_k] [-e stoperror] [-d] [-D] [-A]";
+static char *usage_msg = "learner: neuron: usage: -a neuron [-r rate] [-t/-T trials] [-c clip] [-k sigmoid_k] [-e stoperror] [-d] [-D] [-A]";
 
-static char *options = "r:t:c:k:e:dAD";
+static char *options = "r:t:T:c:k:e:dAD";
 static struct option long_options[] = {
     {"rate", 1, 0, 'r'},
     {"trials", 1, 0, 't'},
+    {"forcetrials", 1, 0, 'T'},
     {"clip", 1, 0, 'c'},
     {"sigmoid", 1, 0, 'k'},
     {"stoperror", 1, 0, 'e'},
