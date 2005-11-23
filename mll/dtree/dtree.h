@@ -67,7 +67,7 @@ dtree *make_dtree(struct knowledge *k, struct params *p,
  * DESC: 
  * RETURN: 
  ********************************************************/
-inline static float log2(float n) {
+inline static float mylog2(float n) {
     static float kconv = 0;
     if (kconv == 0)
         kconv = 1.0 / log(2.0);

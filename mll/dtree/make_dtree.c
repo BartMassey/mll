@@ -71,7 +71,7 @@ dtree_leaf count_instances(struct knowledge *k,
  * RETURN: 
  ********************************************************/
 float an_entropy(int n, int tot) {
-    return -((float)n / tot) * log2((float)n / tot);
+    return -((float)n / tot) * mylog2((float)n / tot);
 }
 
 /********************************************************
