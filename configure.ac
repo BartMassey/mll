@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(learner,0.001,bart@cs.pdx.edu)
+AC_INIT(mll,0.1,bart@cs.pdx.edu,,http://wiki.cs.pdx.edu/bartforge/mll)
 AC_CONFIG_SRCDIR([mll.h])
 AC_CONFIG_HEADER([config.h])
 

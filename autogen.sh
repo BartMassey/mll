@@ -1,0 +1,3 @@
+autoheader
+autoconf
+aclocal
