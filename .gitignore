@@ -2,3 +2,6 @@
 /config.*
 /configure
 Makefile
+*.o
+*.a
+/learner
