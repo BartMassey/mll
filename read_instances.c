@@ -22,7 +22,7 @@ static char *copy(char *buf) {
     return copyn(strlen(buf) + 1, buf);
 }
 
-static char *getline(FILE *f) {
+static char *grabline(FILE *f) {
     static int nbuf = 512;
     static char *buf = 0;
     int nread = 0;
@@ -133,7 +133,7 @@ static struct instance *read_buf_instance(char *buf) {
 
 
 struct instance *read_instance(FILE *f) {
-    char *buf = getline(f);
+    char *buf = grabline(f);
 
     if (!buf)
 	return 0;
@@ -150,7 +150,7 @@ struct instances *read_instances(FILE *f) {
     int curinstances = 512;
 
     assert(iip);
-    buf = getline(f);
+    buf = grabline(f);
     buftmp = copy(buf);
     ip = read_buf_instance(buftmp);
     free(buftmp);
@@ -162,7 +162,7 @@ struct instances *read_instances(FILE *f) {
 	ninstances = iip->ninstances;
 	nconditions = iip->nconditions;
 	iip->instances = malloc(ninstances * sizeof(*iip->instances));
-	buf = getline(f);
+	buf = grabline(f);
 	ip = read_buf_instance(buf);
     } else {
 	iip->instances = malloc(curinstances * sizeof(*iip->instances));
@@ -187,7 +187,7 @@ struct instances *read_instances(FILE *f) {
     }
     iip->instances[i++] = ip;
 
-    while((buf = getline(f))) {
+    while((buf = grabline(f))) {
 	if (i >= curinstances - 1) {
 	    curinstances <<= 1;
 	    iip->instances = realloc(iip->instances,
