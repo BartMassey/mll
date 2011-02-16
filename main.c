@@ -82,7 +82,7 @@ static void print_times(char *what, struct tms *t1, struct tms *t2) {
 
 int main(int argc, char **argv) {
     int i, ch, seed;
-    int ambig = 0, false_pos = 0, false_neg = 0;
+    int ambig = 0, false_pos = 0, false_neg = 0, pos = 0, neg = 0;
     struct tms t1, t2;
     enum mode {
 	MODE_NONE, MODE_LEARN, MODE_CLASSIFY, MODE_CHECK
@@ -243,6 +243,10 @@ int main(int argc, char **argv) {
 	case MODE_CHECK:
 	    for (i = 0; i < iip->ninstances; i++) {
 		int sign = learner->classify(k, iip->instances[i], params);
+		if (iip->instances[i]->sign > 0)
+		    pos++;
+		else
+		    neg++;
 		if (iip->instances[i]->sign > 0 && sign < 0) {
 		    if (verbose || benchmark)
 			printf("mistake: %s %d\n",
@@ -261,8 +265,8 @@ int main(int argc, char **argv) {
 			       iip->instances[i]->name);
 		}
 	    }
-	    printf("%d %d %d %d\n", iip->ninstances,
-		   ambig, false_pos, false_neg);
+	    printf("%d %d %d/%d %d/%d\n", iip->ninstances,
+		   ambig, false_pos, neg, false_neg, pos);
 	    break;
 	case MODE_CLASSIFY:
 	    for (i = 0; i < iip->ninstances; i++) {
