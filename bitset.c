@@ -7,15 +7,8 @@
 #include <assert.h>
 #include <stdlib.h>
 #include "bitset.h"
+#include <string.h>
 
-
-static int strlen(const char *s) {
-    int a = 0;
-
-    for (a = 0; *(s++) != '\0'; a++);
-
-    return a;
-}
 
 /************************************************
  * PARAM:

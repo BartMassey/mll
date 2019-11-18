@@ -67,8 +67,7 @@ int classify_dtree(struct knowledge *k,
 
     // bad node type
     } else {
-        conf = 0.5;
-        sign = 0;
+        assert(0);
     }
 
     if (p->debug)

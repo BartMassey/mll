@@ -146,7 +146,6 @@ struct instances *read_instances(FILE *f) {
     struct instance *ip;
     char *buf, *buftmp;
     int ninstances = 0;
-    int nconditions = 0;
     int curinstances = 512;
 
     assert(iip);
@@ -160,7 +159,7 @@ struct instances *read_instances(FILE *f) {
 	    return 0;
 	}
 	ninstances = iip->ninstances;
-	nconditions = iip->nconditions;
+
 	iip->instances = malloc(ninstances * sizeof(*iip->instances));
 	buf = grabline(f);
 	ip = read_buf_instance(buf);
